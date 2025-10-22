@@ -1,5 +1,7 @@
 package he186065.fucarrentingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,6 +37,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "ProducerID", nullable = false)
+    @JsonBackReference("producer-cars")
     private CarProducer producer;
 
     @Column(name = "RentPrice", nullable = false)
@@ -44,9 +47,11 @@ public class Car {
     private String status;
 
     @OneToMany(mappedBy = "car")
+    @JsonManagedReference("car-rentals")
     private List<CarRental> rentals = new ArrayList<>();
 
     @OneToMany(mappedBy = "car")
+    @JsonManagedReference("car-reviews")
     private List<Review> reviews = new ArrayList<>();
 
     public Car() {}

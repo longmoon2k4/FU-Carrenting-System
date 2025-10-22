@@ -1,5 +1,6 @@
 package he186065.fucarrentingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Account {
     private String role;
 
     @OneToMany(mappedBy = "account")
+    @JsonManagedReference("account-customers")
     private List<Customer> customers = new ArrayList<>();
 
     public Account() {}

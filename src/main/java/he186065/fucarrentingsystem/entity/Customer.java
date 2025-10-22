@@ -1,5 +1,7 @@
 package he186065.fucarrentingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,12 +42,15 @@ public class Customer {
 
     @ManyToOne
     @JoinColumn(name = "AccountID", nullable = false)
+    @JsonBackReference("account-customers")
     private Account account;
 
     @OneToMany(mappedBy = "customer")
+    @JsonManagedReference("customer-rentals")
     private List<CarRental> rentals = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer")
+    @JsonManagedReference("customer-reviews")
     private List<Review> reviews = new ArrayList<>();
 
     public Customer() {}

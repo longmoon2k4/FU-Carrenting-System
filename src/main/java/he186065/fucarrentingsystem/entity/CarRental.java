@@ -1,5 +1,6 @@
 package he186065.fucarrentingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,10 +16,12 @@ public class CarRental {
 
     @ManyToOne
     @JoinColumn(name = "CustomerID", nullable = false)
+    @JsonBackReference("customer-rentals")
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "CarID", nullable = false)
+    @JsonBackReference("car-rentals")
     private Car car;
 
     @Column(name = "PickupDate", nullable = false)

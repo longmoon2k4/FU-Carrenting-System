@@ -1,5 +1,6 @@
 package he186065.fucarrentingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,10 +14,12 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "CustomerID", nullable = false)
+    @JsonBackReference("customer-reviews")
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "CarID", nullable = false)
+    @JsonBackReference("car-reviews")
     private Car car;
 
     @Column(name = "ReviewStar", nullable = false)
