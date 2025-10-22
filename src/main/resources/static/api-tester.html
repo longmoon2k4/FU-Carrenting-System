@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>API Tester - FU Car Renting System</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:16px}
+    h1{margin-top:0}
+    .endpoint{border:1px solid #ddd;padding:10px;margin:8px 0;border-radius:6px}
+    label{display:block;margin:6px 0}
+    textarea{width:100%;height:120px}
+    pre{background:#f6f8fa;padding:10px;border-radius:6px;overflow:auto}
+    .btn{padding:8px 12px;border:0;background:#0066cc;color:#fff;border-radius:4px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h1>API Tester — FU Car Renting System</h1>
+  <p>This page lets you invoke the application's REST endpoints. Start your Spring Boot app and open <code>/api-tester.html</code>.</p>
+
+  <div id="endpoints"></div>
+
+  <script>
+    // List of endpoints discovered from controllers
+    const endpoints = [
+      {group: 'Accounts', method:'GET', url:'/api/accounts'},
+      {group: 'Accounts', method:'GET', url:'/api/accounts/{id}', hasPath:true},
+      {group: 'Accounts', method:'POST', url:'/api/accounts', hasBody:true},
+      {group: 'Accounts', method:'PUT', url:'/api/accounts/{id}', hasPath:true, hasBody:true},
+      {group: 'Accounts', method:'DELETE', url:'/api/accounts/{id}', hasPath:true},
+
+      {group: 'Cars', method:'GET', url:'/api/cars'},
+      {group: 'Cars', method:'GET', url:'/api/cars/{id}', hasPath:true},
+      {group: 'Cars', method:'POST', url:'/api/cars', hasBody:true},
+      {group: 'Cars', method:'PUT', url:'/api/cars/{id}', hasPath:true, hasBody:true},
+      {group: 'Cars', method:'DELETE', url:'/api/cars/{id}', hasPath:true},
+
+      {group: 'Producers', method:'GET', url:'/api/producers'},
+      {group: 'Producers', method:'GET', url:'/api/producers/{id}', hasPath:true},
+      {group: 'Producers', method:'POST', url:'/api/producers', hasBody:true},
+      {group: 'Producers', method:'PUT', url:'/api/producers/{id}', hasPath:true, hasBody:true},
+      {group: 'Producers', method:'DELETE', url:'/api/producers/{id}', hasPath:true},
+
+      {group: 'Rentals', method:'GET', url:'/api/rentals'},
+      {group: 'Rentals', method:'GET', url:'/api/rentals/{id}', hasPath:true},
+      {group: 'Rentals', method:'POST', url:'/api/rentals', hasBody:true},
+      {group: 'Rentals', method:'PUT', url:'/api/rentals/{id}', hasPath:true, hasBody:true},
+      {group: 'Rentals', method:'DELETE', url:'/api/rentals/{id}', hasPath:true},
+
+      {group: 'Customers', method:'GET', url:'/api/customers'},
+      {group: 'Customers', method:'GET', url:'/api/customers/{id}', hasPath:true},
+      {group: 'Customers', method:'POST', url:'/api/customers', hasBody:true},
+      {group: 'Customers', method:'PUT', url:'/api/customers/{id}', hasPath:true, hasBody:true},
+      {group: 'Customers', method:'DELETE', url:'/api/customers/{id}', hasPath:true},
+
+      {group: 'Reviews', method:'GET', url:'/api/reviews'},
+      {group: 'Reviews', method:'GET', url:'/api/reviews/{id}', hasPath:true},
+      {group: 'Reviews', method:'POST', url:'/api/reviews', hasBody:true},
+      {group: 'Reviews', method:'PUT', url:'/api/reviews/{id}', hasPath:true, hasBody:true},
+      {group: 'Reviews', method:'DELETE', url:'/api/reviews/{id}', hasPath:true},
+    ];
+
+    const container = document.getElementById('endpoints');
+
+    function render() {
+      container.innerHTML = '';
+      endpoints.forEach((ep, i) => {
+        const div = document.createElement('div');
+        div.className = 'endpoint';
+        div.innerHTML = `
+          <strong>${ep.group}</strong> — <em>${ep.method}</em> <code>${ep.url}</code>
+          <div style="margin-top:8px">
+            ${ep.hasPath ? '<label>Path param (id): <input data-id class="path-input" placeholder="e.g. 1"></label>' : ''}
+            ${ep.hasBody ? '<label>Request body (JSON): <textarea data-body placeholder="{}"></textarea></label>' : ''}
+            <label>Additional headers (JSON): <input data-headers placeholder='{"Content-Type":"application/json"}' style="width:60%"></label>
+            <button class="btn" data-run>Send</button>
+            <div style="margin-top:8px"><strong>Response</strong><pre data-response>{}</pre></div>
+          </div>
+        `;
+
+        const runBtn = div.querySelector('[data-run]');
+        runBtn.addEventListener('click', async () => {
+          const idInput = div.querySelector('.path-input');
+          const bodyEl = div.querySelector('[data-body]');
+          const headersEl = div.querySelector('[data-headers]');
+          const respPre = div.querySelector('[data-response]');
+
+          let url = ep.url;
+          if (ep.hasPath) {
+            const id = idInput.value.trim();
+            if (!id) { alert('Please provide path id'); return; }
+            url = url.replace('{id}', encodeURIComponent(id));
+          }
+
+          let body = null;
+          if (ep.hasBody) {
+            try { body = bodyEl.value ? JSON.parse(bodyEl.value) : null; } catch (e) { alert('Invalid JSON body'); return; }
+          }
+
+          let headers = {};
+          if (headersEl && headersEl.value.trim()) {
+            try { headers = JSON.parse(headersEl.value); } catch (e) { alert('Invalid JSON headers'); return; }
+          }
+
+          // default JSON content-type for body-carrying requests
+          if (ep.hasBody && !headers['Content-Type'] && !headers['content-type']) {
+            headers['Content-Type'] = 'application/json';
+          }
+
+          respPre.textContent = '...waiting';
+          try {
+            const res = await fetch(url, {
+              method: ep.method,
+              headers,
+              body: ep.hasBody && body !== null ? JSON.stringify(body) : undefined
+            });
+            const text = await res.text();
+            let pretty = text;
+            try { const json = JSON.parse(text); pretty = JSON.stringify(json, null, 2); } catch (e) {}
+            respPre.textContent = `HTTP ${res.status} ${res.statusText}\n\n` + pretty;
+          } catch (err) {
+            respPre.textContent = 'Request failed: ' + err;
+          }
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
