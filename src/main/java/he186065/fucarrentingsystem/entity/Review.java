@@ -20,7 +20,7 @@ public class Review {
     private Car car;
 
     @Column(name = "ReviewStar", nullable = false)
-    private Integer reviewStar;
+    private Byte reviewStar;
 
     @Column(name = "Comment", nullable = false)
     private String comment;
@@ -36,8 +36,8 @@ public class Review {
     public Car getCar() { return car; }
     public void setCar(Car car) { this.car = car; }
 
-    public Integer getReviewStar() { return reviewStar; }
-    public void setReviewStar(Integer reviewStar) { this.reviewStar = reviewStar; }
+    public Byte getReviewStar() { return reviewStar; }
+    public void setReviewStar(Byte reviewStar) { this.reviewStar = reviewStar; }
 
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
