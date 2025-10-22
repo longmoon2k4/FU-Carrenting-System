@@ -1,0 +1,286 @@
+/* Minimal styles for header/footer/home */
+html,body{box-sizing:border-box;overflow-x:hidden}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  margin:0;
+  padding:0;
+}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+.site-header{background:#f8f8f8;padding:12px 0;border-bottom:1px solid #e6e6e6}
+.header-flex{display:flex;align-items:center;justify-content:flex-start;width:100%}
+/* make the header's container span full width so logo and auth can sit at the page edges */
+.container.header-flex{max-width:100%;padding-left:16px;padding-right:16px}
+.header-left{display:flex;align-items:center}
+.header-logo{height:40px;display:block}
+.header-project-name{font-size:18px;font-weight:700;margin-left:12px;color:#e66b6b}
+.header-logo-link{display:inline-block}
+.header-left{padding-left:16px}
+.header-middle-right{list-style:none;margin:0;padding:0;display:flex;margin-left:8px;align-items:center;padding-right:16px}
+.header-search-wrapper{display:flex;flex-direction:column;align-items:flex-start;margin:0 8px}
+.header-nav{display:flex;gap:18px;align-items:center;margin-left:48px}
+.nav-item{color:#222;text-decoration:none;font-weight:600;padding:6px 8px;border-radius:4px}
+.nav-item:hover{background:#f2f2f2}
+.header-search{display:flex;align-items:center;border:1px solid #ddd;border-radius:24px;overflow:hidden}
+.search-input{border:0;padding:8px 12px;width:320px}
+.search-input:focus{outline:none}
+.search-btn,.filter-toggle{background:transparent;border:0;padding:8px 10px;cursor:pointer;color:#444}
+.search-filter-panel{display:none;background:#fff;border:1px solid #ddd;padding:12px;border-radius:6px;position:absolute;margin-top:8px;z-index:60}
+.search-filter-panel[aria-hidden="false"]{display:block}
+.filter-row{display:flex;flex-direction:column;margin-bottom:8px}
+.filter-row label{font-size:12px;color:#666;margin-bottom:4px}
+.filter-row input,.filter-row select{padding:6px;border:1px solid #ccc;border-radius:4px}
+.filter-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn{padding:6px 12px;border-radius:4px;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:#2d3748;color:#fff}
+.btn-secondary{background:#f0f0f0}
+.header-middle-right-item{position:relative;padding:6px 12px;cursor:pointer;display:flex;align-items:center}
+.header-user-icon{font-size:28px;color:#f85454;flex:0 0 auto}
+.auth-container{display:flex;flex-direction:column;justify-content:center;margin-left:8px;line-height:1}
+.text-dndk{font-size:12px;color:#888}
+.text-tk{font-size:14px;font-weight:600;color:#222;display:flex;align-items:center}
+.text-tk i{margin-left:6px;font-size:12px}
+.header-middle-right-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid #ddd;list-style:none;padding:6px 0;margin:0;min-width:160px;box-shadow:0 6px 14px rgba(0,0,0,0.08);z-index:50}
+/* show menu when hovering trigger or the menu itself so small gaps don't hide it */
+.header-middle-right-item.dropdown:hover .header-middle-right-menu,
+.header-middle-right-item.dropdown .header-middle-right-menu:hover{display:block}
+.header-middle-right-menu li a{display:block;padding:8px 16px;color:#333;text-decoration:none}
+.header-middle-right-menu li a:hover{background:#f5f5f5}
+.site-footer{background:#222;color:#eee;padding:16px 0;margin-top:32px}
+.site-main{padding:24px 0}
+
+/* Ensure main content has safe horizontal padding so it doesn't touch the browser edges */
+.site-main.container{padding-left:20px;padding-right:20px}
+
+@media (min-width:768px){
+  /* wider pages get more breathing room */
+  .site-main.container{padding-left:40px;padding-right:40px}
+}
+
+@media (max-width:480px){
+  /* reduce paddings on very small screens */
+  .site-main.container{padding-left:12px;padding-right:12px}
+}
+
+/* Ensure each major section inside the main area is centered and constrained
+   so content never touches the browser edges. This keeps full-width banners
+   and special sections intact while making regular sections boxed. */
+.site-main > *{
+  max-width:1200px;
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:20px;
+  padding-right:20px;
+  box-sizing:border-box;
+}
+
+@media (min-width:768px){
+  .site-main > *{padding-left:32px;padding-right:32px}
+}
+
+@media (max-width:480px){
+  .site-main > *{padding-left:12px;padding-right:12px}
+}
+
+/* Home page specific styles */
+
+/* Banner (page hero) - main landing area */
+.banner{background:transparent;padding:40px 0;border-bottom:0}
+.banner-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:32px;padding:0 16px}
+.banner-image{width:60%;height:360px;object-fit:cover;border-radius:12px;box-shadow:0 18px 40px rgba(16,24,40,0.06);display:block}
+.banner-cta{width:40%;padding:12px}
+.banner-cta h1{font-size:38px;margin:0 0 12px;color:var(--primary);line-height:1.04;font-weight:800}
+.banner-cta p{color:var(--muted);margin:0 0 18px;font-size:16px}
+.banner-cta .btn-primary{background:var(--primary);color:#fff;padding:12px 18px;border-radius:10px;border:2px solid rgba(0,0,0,0.06);box-shadow:0 8px 24px rgba(15,23,36,0.06);display:inline-block;text-decoration:none}
+.banner-cta .btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(15,23,36,0.12)}
+
+/* small utility for full-width top banner image when present */
+.banner-image.full{width:100%;height:420px}
+
+/* Modern look & animations */
+:root{
+  --bg:#f7f8fb;
+  --primary:#0f1724; /* dark navy */
+  --accent:#f97316; /* orange accent for vibrancy */
+  --muted:#6b7280;
+  --card-bg:#ffffff;
+}
+
+body{background:var(--bg);color:var(--primary);} 
+
+/* site banner / promo (top thin bar) */
+.site-banner{background:linear-gradient(90deg,#fff7ef,#fffdf9);padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.03)}
+.site-banner-inner{max-width:1200px;margin:0 auto;padding:6px 16px;text-align:center;color:#7a2b00;display:flex;justify-content:center;gap:12px;align-items:center}
+.site-banner .banner-cta{background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700}
+
+/* commitments / feature cards */
+.commitments{padding:32px 0}
+.commitments h2{font-size:22px;margin:0 0 18px;color:var(--primary);text-align:left}
+.commitments .cards{
+  display:flex; /* horizontal row */
+  gap:20px;
+  align-items:stretch;
+  flex-wrap:nowrap; /* keep everything on a single line */
+  overflow-x:auto; /* allow horizontal scroll on small screens */
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:6px; /* breathing room for scrollbar */
+}
+.commitments .cards::-webkit-scrollbar{height:8px}
+.commitments .cards::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:8px}
+
+.card{background:var(--card-bg);padding:22px;border-radius:14px;box-shadow:0 10px 30px rgba(16,24,40,0.04);transition:transform .28s ease,box-shadow .28s ease;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:150px;flex:0 0 auto;min-width:260px}
+
+/* On wider screens, display cards in a centered grid instead of a single horizontal row */
+@media (min-width:1200px){
+  .commitments .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;overflow:visible;padding-bottom:0}
+  .card{min-width:unset;flex:unset}
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(16,24,40,0.08)}
+.card i{color:var(--accent);margin-bottom:12px;font-size:26px;background:#fff3ea;padding:12px;border-radius:50%}
+.card h3{font-size:16px;margin:6px 0 8px}
+.card p{font-size:13px;color:var(--muted);line-height:1.4;max-width:280px}
+
+/* steps */
+.how-to-rent .steps{
+  display:flex;
+  gap:18px;
+  flex-wrap:nowrap; /* keep steps on one row */
+  list-style:none;
+  padding:0;
+  margin:0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.how-to-rent .steps li{
+  background:#fff;
+  padding:18px 16px 16px;
+  border-radius:10px;
+  border:2px solid var(--accent);
+  box-shadow:0 6px 18px rgba(16,24,40,0.03);
+  min-width:220px;
+  flex:0 0 auto;
+  position:relative; /* needed for pseudo badge */
+  font-size:13px;
+}
+
+/* hide existing numeric strong used in markup (kept for accessibility) */
+.how-to-rent .steps li strong{display:none}
+
+/* circular orange arrow badge centered above each step */
+.how-to-rent .steps li::before{
+  content:'➜';
+  position:absolute;
+  top:-18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--accent);
+  color:#fff;
+  border-radius:50%;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(249,115,22,0.18);
+}
+
+/* ensure space for badge above the row */
+.how-to-rent .steps{padding-top:22px;padding-bottom:12px}
+
+@media (min-width:1000px){
+  /* show more steps before scrolling on wide screens */
+  .how-to-rent .steps li{min-width:240px}
+}
+
+@media (max-width:700px){
+  .how-to-rent .steps{gap:12px}
+  .how-to-rent .steps li{min-width:200px;padding:14px 12px}
+  .how-to-rent .steps li::before{width:32px;height:32px;top:-16px}
+}
+
+/* topup */
+.topup-methods{display:flex;flex-wrap:wrap;gap:14px}
+.topup-methods .method{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff,#fcfdff);
+  border:1px solid rgba(16,24,40,0.04);
+  box-shadow:0 6px 18px rgba(16,24,40,0.03);
+  color:var(--primary);
+  text-decoration:none;
+  white-space:nowrap;
+}
+.topup-methods .method i{margin-right:8px;color:var(--accent);font-size:18px}
+.topup-methods .method:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(16,24,40,0.06)}
+
+/* featured cars */
+.car-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.car-card{background:linear-gradient(180deg,#fff,#fcfdff);border-radius:12px;padding:0;box-shadow:0 12px 30px rgba(16,24,40,0.04);transition:transform .28s ease,box-shadow .28s ease;overflow:hidden}
+.car-card:hover{transform:translateY(-8px);box-shadow:0 28px 60px rgba(16,24,40,0.08)}
+.car-card img{height:140px;width:100%;object-fit:cover}
+.car-card .card-body{padding:12px}
+.car-card h3{margin:8px 0 6px;font-size:15px}
+.car-card .price{color:var(--accent);font-weight:700;margin-bottom:8px}
+.car-card p{font-size:13px;color:var(--muted);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* FAQ */
+.faq .qa h4{margin-top:8px}
+.faq .qa p{max-width:720px;color:var(--muted);font-size:14px;display:none}
+.faq .qa h4::after{content:' ▾';color:var(--accent);font-weight:700}
+.faq .qa h4[aria-expanded="true"]::after{content:' ▴'}
+
+/* make FAQ collapsible via details tag fallback */
+.faq .qa details summary{cursor:pointer}
+.faq .qa details p{display:block}
+
+/* contact CTA */
+.contact-cta .btn{padding:12px 20px;border-radius:10px}
+
+/* animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeUp .6s ease both}
+
+/* responsive tweaks */
+@media (max-width:900px){
+  .hero-inner{flex-direction:column;text-align:center}
+  .header-search-wrapper .search-input{width:200px}
+}
+
+.commitments{ /* ensure spacing consistent with new styles for smaller viewports */ padding:28px 0}
+.topup{padding:28px 0}
+.topup-methods{display:flex;gap:12px}
+.topup-methods .method{background:#fafafa;padding:8px 12px;border-radius:8px;border:1px solid #eee;box-shadow:none}
+.featured-cars{padding:28px 0}
+.car-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.car-card{background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;text-align:center}
+.car-card img{max-width:100%;height:140px;object-fit:cover;border-radius:6px}
+.faq{padding:28px 0}
+.contact-cta{padding:28px 0;text-align:center}
+
+/* ====== Full-width main layout (remove big side gaps) ====== */
+/* make the page main area stretch to the viewport width while keeping section padding */
+.site-main.container{max-width:100%;padding:0;margin:0}
+.site-main .container-inner{max-width:1200px;margin:0 auto;padding:24px}
+.site-banner-inner{max-width:100%;padding:8px 20px}
+
+/* ====== Promo confetti / fireworks animation ====== */
+.site-banner{position:relative;overflow:visible}
+.confetti-piece{position:absolute;pointer-events:none;border-radius:2px;will-change:transform,opacity;z-index:60}
+@keyframes confetti-fall{to{transform:translateY(120vh) rotate(720deg);opacity:0}}
+
+.firework{position:absolute;pointer-events:none;border-radius:50%;transform:translate(-50%,-50%) scale(0);opacity:0.95;z-index:55}
+@keyframes firework-burst{to{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+
+/* CTA glow while promo runs */
+.site-banner-inner.glow .banner-cta{box-shadow:0 10px 30px rgba(249,115,22,0.22);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%{transform:translateY(0)}50%{transform:translateY(-3px)}100%{transform:none}}
+
+/* small responsive safety */
+@media (max-width:700px){
+  .site-banner-inner.glow .banner-cta{padding:6px 10px;font-size:14px}
+}
+

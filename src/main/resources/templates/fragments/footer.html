@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<!-- Footer fragment -->
+<div th:fragment="site-footer">
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> FU Car Renting System</p>
+        </div>
+    </footer>
+</div>

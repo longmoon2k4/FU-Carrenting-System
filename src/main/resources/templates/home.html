@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang chủ - FU Car Renting System</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <!-- Font Awesome (local fallback) -->
+    <link rel="stylesheet" th:href="@{/font/font-awesome-pro-v6-6.2.0/css/all.min.css}" />
+</head>
+
+<body>
+
+    <div th:insert="fragments/header :: site-header"></div>
+
+    <!-- Promotional banner (with animated promo effects) -->
+    <div class="site-banner">
+        <div class="site-banner-inner glow">
+            <strong>Ưu đãi cuối tuần:</strong> Giảm 20% cho mọi đơn đặt từ thứ 6 đến chủ nhật. Mã: WEEKEND20
+            <a href="/cars" class="banner-cta">Đặt ngay</a>
+        </div>
+        <!-- promo effects container (confetti / fireworks) -->
+        <div id="promo-effects" aria-hidden="true"></div>
+    </div>
+
+    <main class="site-main container">
+        <section class="banner">
+            <div class="banner-inner">
+                <img src="/img/banner-1.jpg" alt="FU Car Renting - banner" class="banner-image" />
+                <div class="banner-cta">
+                    <h1>RENTING CAR ST</h1>
+                    <p>Thuê xe nhanh chóng, minh bạch và an toàn. Chọn xe phù hợp, nhận xe tại cửa hàng hoặc giao tận
+                        nơi.</p>
+                    <a class="btn btn-primary" href="/cars">Tìm xe ngay</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="commitments">
+            <!-- <h2>Cam kết của chúng tôi</h2> -->
+            <div class="cards">
+                <div class="card">
+                    <i class="fa-solid fa-check fa-2x"></i>
+                    <h3>Xe chất lượng</h3>
+                    <p>Tất cả xe được kiểm tra định kỳ, bảo dưỡng đầy đủ trước khi giao.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-shield-halved fa-2x"></i>
+                    <h3>An toàn & minh bạch</h3>
+                    <p>Giá hiển thị rõ ràng, không phí ẩn. Hợp đồng minh bạch.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-shield-halved fa-2x"></i>
+                    <h3>Cập nhật</h3>
+                    <p>Liên tục cập nhật những mẫu xe mới nhất và nâng cấp chất lượng.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-clock fa-2x"></i>
+                    <h3>Hỗ trợ 24/7</h3>
+                    <p>Đội ngũ hỗ trợ luôn sẵn sàng để giúp bạn trong suốt hành trình.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-to-rent">
+            <h2>Hướng dẫn thuê xe</h2>
+            <ol class="steps">
+                <li><strong>1.</strong> Tìm xe: Sử dụng thanh tìm kiếm hoặc duyệt danh sách <a href="/cars">Thuê xe</a>.
+                </li>
+                <li><strong>2.</strong> Chọn ngày giờ và địa điểm nhận xe.</li>
+                <li><strong>3.</strong> Xác nhận thông tin, đặt cọc (nếu cần) và thanh toán.</li>
+                <li><strong>4.</strong> Nhận xe và kiểm tra trước khi rời đi.</li>
+            </ol>
+        </section>
+
+        <section class="topup">
+            <h2>Nạp tiền & Thanh toán</h2>
+            <p>Bạn có thể nạp tiền vào tài khoản để thanh toán nhanh chóng hoặc thanh toán trực tiếp khi đặt xe. Hỗ trợ
+                thẻ, chuyển khoản và ví điện tử.</p>
+            <div class="topup-methods">
+                <div class="method"><i class="fa-solid fa-credit-card"></i> Thẻ tín dụng / ATM</div>
+                <div class="method"><i class="fa-solid fa-bank"></i> Chuyển khoản ngân hàng</div>
+                <div class="method"><i class="fa-solid fa-wallet"></i> Ví điện tử</div>
+            </div>
+        </section>
+
+        <section class="featured-cars">
+            <h2>Xe nổi bật</h2>
+            <div class="car-grid">
+                <!-- static placeholders; replace with real data later -->
+                <div class="car-card">
+                    <img src="/img/car-1.svg" alt="Car" />
+                    <h3>Toyota Vios</h3>
+                    <p class="price">250.000 VND/ngày</p>
+                </div>
+                <div class="car-card">
+                    <img src="/img/car-2.svg" alt="Car" />
+                    <h3>Honda City</h3>
+                    <p class="price">300.000 VND/ngày</p>
+                </div>
+                <div class="car-card">
+                    <img src="/img/car-3.svg" alt="Car" />
+                    <h3>Mazda CX-5</h3>
+                    <p class="price">800.000 VND/ngày</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <h2>Câu hỏi thường gặp</h2>
+            <div class="qa">
+                <h4>1. Tôi cần giấy tờ gì để thuê xe?</h4>
+                <p>Chứng minh nhân dân / Căn cước và bằng lái hợp lệ. Một số xe yêu cầu đặt cọc.</p>
+                <h4>2. Làm sao để hủy đặt xe?</h4>
+                <p>Kiểm tra chính sách hủy trong phần chi tiết đặt xe. Phần lớn trường hợp hủy trước 24 giờ miễn phí.
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-cta">
+            <h2>Chuẩn bị đi đâu?</h2>
+            <p>Nếu cần hỗ trợ nhanh, gọi hotline hoặc gửi yêu cầu tại trang Hỗ trợ.</p>
+            <a class="btn btn-primary" href="/support">Liên hệ hỗ trợ</a>
+        </section>
+    </main>
+
+    <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</body>
+<script th:src="@{/js/search.js}"></script>
+
+</html>
