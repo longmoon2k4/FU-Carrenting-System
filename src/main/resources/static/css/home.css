@@ -102,6 +102,7 @@ body{
   --bg:#f7f8fb;
   --primary:#0f1724; /* dark navy */
   --accent:#f97316; /* orange accent for vibrancy */
+  --header-height:64px;
   --muted:#6b7280;
   --card-bg:#ffffff;
 }
@@ -109,7 +110,7 @@ body{
 body{background:var(--bg);color:var(--primary);} 
 
 /* site banner / promo (top thin bar) */
-.site-banner{background:linear-gradient(90deg,#fff7ef,#fffdf9);padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.03)}
+.site-banner{background:linear-gradient(90deg,#fff7ef,#fffdf9);padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.03);margin-top:var(--header-height)}
 .site-banner-inner{max-width:1200px;margin:0 auto;padding:6px 16px;text-align:center;color:#7a2b00;display:flex;justify-content:center;gap:12px;align-items:center}
 .site-banner .banner-cta{background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700}
 
