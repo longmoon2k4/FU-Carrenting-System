@@ -8,18 +8,181 @@
 </head>
 <body>
   <div th:insert="fragments/header :: site-header"></div>
-  <main class="site-main container">
-    <div class="container-inner">
-      <h1>Hỗ trợ</h1>
-      <p>Trang placeholder cho hỗ trợ khách hàng.</p>
-      <div th:if="${currentUser}">
-        <h3>Xin chào, <span th:text="${currentUser.customerName}"></span></h3>
-        <p>Email: <span th:text="${currentUser.email}"></span></p>
+
+  <main class="site-main container support-page">
+    <header class="support-hero fade-in">
+      <div class="container-inner">
+        <h1>Trung tâm hỗ trợ FU Car</h1>
+        <p class="lead">Cần giúp đỡ? Chúng tôi ở đây để hỗ trợ bạn 24/7 — đặt câu hỏi, gửi ticket hoặc gọi hotline.</p>
       </div>
-      <div th:insert="fragments/auth-required :: auth-required"></div>
-    </div>
+    </header>
+
+    <section class="contact-grid fade-in">
+      <div class="container-inner grid">
+        <div class="support-card">
+          <i class="fa-solid fa-phone fa-2x"></i>
+          <h3>Hotline</h3>
+          <p class="muted">Gọi ngay để hỗ trợ đặt xe & khẩn cấp</p>
+          <a href="tel:+840123456789" class="btn btn-primary">+84 0123 456 789</a>
+        </div>
+
+        <div class="support-card">
+          <i class="fa-solid fa-envelope fa-2x"></i>
+          <h3>Email hỗ trợ</h3>
+          <p class="muted">Gửi mô tả chi tiết, chúng tôi sẽ trả lời trong 24 giờ</p>
+          <a href="mailto:support@fucarrent.com" class="btn btn-secondary">support@fucarrent.com</a>
+        </div>
+
+        <div class="support-card">
+          <i class="fa-solid fa-clock fa-2x"></i>
+          <h3>Giờ làm việc</h3>
+          <p class="muted">Hỗ trợ trực tuyến 24/7 — văn phòng: 08:00 - 18:00</p>
+          <div class="small muted">Thứ 2 - Chủ nhật</div>
+        </div>
+
+        <div class="support-card">
+          <i class="fa-solid fa-life-ring fa-2x"></i>
+          <h3>Tài nguyên nhanh</h3>
+          <p class="muted">Hướng dẫn, chính sách thuê, điều kiện và hoàn tiền</p>
+          <a href="/support/faq" class="btn btn-secondary">Xem FAQ</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticket-section fade-in">
+      <div class="container-inner two-col">
+        <div class="ticket-card">
+          <h2>Gửi yêu cầu hỗ trợ</h2>
+          <p class="muted">Điền form dưới đây để gửi yêu cầu — mô tả càng chi tiết, xử lý càng nhanh.</p>
+          <form id="support-ticket" th:action="@{/support/ticket}" method="post" class="ticket-form">
+            <div class="form-row">
+              <label>Họ và tên</label>
+              <input name="name" type="text" placeholder="Nguyễn Văn A" required />
+            </div>
+            <div class="form-row">
+              <label>Email</label>
+              <input name="email" type="email" placeholder="email@domain.com" required />
+            </div>
+            <div class="form-row">
+              <label>Số điện thoại</label>
+              <input name="phone" type="tel" placeholder="+84 0xxx xxx xxx" />
+            </div>
+            <div class="form-row">
+              <label>Loại yêu cầu</label>
+              <select name="category">
+                <option>Vấn đề đặt xe</option>
+                <option>Thanh toán</option>
+                <option>Hủy / Hoàn tiền</option>
+                <option>Khiếu nại</option>
+                <option>Khác</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Mô tả chi tiết</label>
+              <textarea name="message" rows="5" placeholder="Mô tả vấn đề của bạn..." required></textarea>
+            </div>
+            <div class="form-row actions">
+              <button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
+              <button type="reset" class="btn btn-secondary">Xóa</button>
+            </div>
+          </form>
+        </div>
+
+        <aside class="help-sidebar">
+          <div class="card small-card">
+            <h4>Trạng thái yêu cầu</h4>
+            <p class="muted">Theo dõi ticket bằng mã bạn nhận được sau khi gửi.</p>
+          </div>
+          <div class="card small-card">
+            <h4>Đặt xe khẩn cấp</h4>
+            <p class="muted">Gọi hotline nếu bạn cần hỗ trợ ngay lập tức.</p>
+            <a href="tel:+840123456789" class="btn btn-primary">Gọi ngay</a>
+          </div>
+          <div class="card small-card">
+            <h4>Văn phòng chính</h4>
+            <p class="muted">123 Đường Lý Thường Kiệt, Hà Nội</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="faq-section fade-in">
+      <div class="container-inner">
+        <h2>Câu hỏi thường gặp</h2>
+        <div class="faq-list">
+          <details>
+            <summary>Quy trình đặt xe như thế nào?</summary>
+            <p>Chọn xe, chọn ngày nhận & trả, xác nhận thông tin, thanh toán, và nhận xe tại điểm hẹn hoặc chọn giao tận nơi.</p>
+          </details>
+          <details>
+            <summary>Chính sách hủy và hoàn tiền?</summary>
+            <p>Hủy trước 24 giờ thường được hoàn tối đa. Các điều kiện phụ thuộc vào loại giá và khuyến mãi.</p>
+          </details>
+          <details>
+            <summary>Tôi muốn đổi ngày trả xe — phải làm sao?</summary>
+            <p>Liên hệ hotline hoặc gửi ticket, cung cấp mã đặt và ngày mới mong muốn; chúng tôi sẽ hỗ trợ điều chỉnh nếu xe còn trống.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="team-section fade-in">
+      <div class="container-inner">
+        <h2>Đội ngũ hỗ trợ</h2>
+        <div class="team-grid">
+          <div class="team-card">
+            <img src="/img/car-placeholder.svg" alt="Nhân viên" />
+            <h4>Nguyễn Thị B</h4>
+            <div class="muted">Trưởng nhóm CSKH</div>
+          </div>
+          <div class="team-card">
+            <img src="/img/car-placeholder.svg" alt="Nhân viên" />
+            <h4>Trần Văn C</h4>
+            <div class="muted">Hỗ trợ kỹ thuật</div>
+          </div>
+          <div class="team-card">
+            <img src="/img/car-placeholder.svg" alt="Nhân viên" />
+            <h4>Phạm Minh D</h4>
+            <div class="muted">Hỗ trợ đặt xe</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <button class="chat-button" aria-label="Mở chat hỗ trợ"><i class="fa-solid fa-comment-dots"></i></button>
+
+  <div class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
   <div th:insert="fragments/footer :: site-footer"></div>
   <div th:insert="~{fragments/auth-modal :: auth-modal}"></div>
+
+  <script>
+    // small UX: optional client-side feedback on ticket submit
+    document.addEventListener('DOMContentLoaded', function(){
+      var form = document.getElementById('support-ticket');
+      var toastContainer = document.querySelector('.toast-container');
+      function showToast(message, type){
+        var t = document.createElement('div');
+        t.className = 'toast ' + (type || '');
+        t.textContent = message;
+        toastContainer.appendChild(t);
+        setTimeout(function(){ t.style.opacity = '0'; try{ t.remove(); }catch(e){} }, 4500);
+      }
+      if(form){
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          var id = 'TCK' + Math.floor(Math.random()*9000+1000);
+          showToast('Yêu cầu của bạn đã được gửi. Mã ticket: ' + id, 'success');
+          form.reset();
+        });
+      }
+      var chat = document.querySelector('.chat-button');
+      if(chat){
+        chat.addEventListener('click', function(){ showToast('Mở chat — (demo)'); });
+      }
+    });
+  </script>
 </body>
 </html>
