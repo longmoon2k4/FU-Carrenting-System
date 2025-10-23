@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const loginForm = loginContainer && loginContainer.querySelector('form');
   const registerForm = registerContainer && registerContainer.querySelector('form');
 
-  // initialize header from localStorage (if user already logged in)
+  // initialize header from sessionStorage (if user already logged in this session)
   try {
-    const stored = localStorage.getItem('furs_user');
+    const stored = sessionStorage.getItem('furs_user');
     if (stored) { const u = JSON.parse(stored); if (u && u.email) updateHeaderUser(u); }
   } catch (e) { }
 
@@ -45,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function setCurrentUser(user) {
-    try { localStorage.setItem('furs_user', JSON.stringify(user || null)); } catch (e) { }
+    try { sessionStorage.setItem('furs_user', JSON.stringify(user || null)); } catch (e) { }
     updateHeaderUser(user);
   }
 
   function clearCurrentUser() {
-    try { localStorage.removeItem('furs_user'); } catch (e) { }
+    try { sessionStorage.removeItem('furs_user'); } catch (e) { }
     updateHeaderUser(null);
   }
 

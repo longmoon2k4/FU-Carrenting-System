@@ -51,9 +51,9 @@
 document.addEventListener('DOMContentLoaded', function(){
   // load current user injected by model if available
   const injected = /*[[${currentUser}]]*/ null;
-  // fallback to localStorage
+  // fallback to sessionStorage
   let user = null;
-  try{ user = injected || JSON.parse(localStorage.getItem('furs_user')); }catch(e){}
+  try{ user = injected || JSON.parse(sessionStorage.getItem('furs_user')); }catch(e){}
   const form = document.getElementById('profile-form');
   if(user && form){
     form.querySelector('[name="customerName"]').value = user.customerName || '';
@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function(){
     fetch('/api/customers/' + user.customerId, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
       .then(r=>{ if(r.ok) return r.json(); return r.text().then(t=>{throw new Error(t)}); })
       .then(updated=>{
-        // update localStorage and header
-        try{ localStorage.setItem('furs_user', JSON.stringify(updated)); }catch(e){}
+  // update sessionStorage and header
+  try{ sessionStorage.setItem('furs_user', JSON.stringify(updated)); }catch(e){}
         try{ (window.setCurrentUser||(()=>{}))(updated); }catch(e){}
         (window.showToast||console.log)('Cập nhật hồ sơ thành công');
       }).catch(err=> (window.showToast||console.error)('Cập nhật thất bại: '+err.message));
