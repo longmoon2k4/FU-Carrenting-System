@@ -56,6 +56,7 @@ body{
 .header-left{padding-left:16px}
 .header-middle-right{list-style:none;margin:0;padding:0;display:flex;margin-left:8px;align-items:center;padding-right:16px}
 .header-search-wrapper{display:flex;flex-direction:column;align-items:flex-start;margin:0 8px}
+.header-search-wrapper{position:relative}
 .header-nav{display:flex;gap:18px;align-items:center;margin-left:48px}
 .nav-item{color:#222;text-decoration:none;font-weight:600;padding:6px 8px;border-radius:4px}
 .nav-item:hover{background:#f2f2f2}
@@ -63,8 +64,11 @@ body{
 .search-input{border:0;padding:8px 12px;width:320px}
 .search-input:focus{outline:none}
 .search-btn,.filter-toggle{background:transparent;border:0;padding:8px 10px;cursor:pointer;color:#444}
-.search-filter-panel{display:none;background:#fff;border:1px solid #ddd;padding:12px;border-radius:6px;position:absolute;margin-top:8px;z-index:60}
+.search-filter-panel{display:none;background:#fff;border:1px solid #ddd;padding:12px;border-radius:6px;position:absolute;top:calc(100% + 8px);left:0;min-width:300px;z-index:1200}
 .search-filter-panel[aria-hidden="false"]{display:block}
+
+/* alternate open state via wrapper class (more robust) */
+.header-search-wrapper.open .search-filter-panel{display:block}
 .filter-row{display:flex;flex-direction:column;margin-bottom:8px}
 .filter-row label{font-size:12px;color:#666;margin-bottom:4px}
 .filter-row input,.filter-row select{padding:6px;border:1px solid #ccc;border-radius:4px}

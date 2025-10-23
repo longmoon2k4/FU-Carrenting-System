@@ -3,6 +3,7 @@ package he186065.fucarrentingsystem.controller;
 import he186065.fucarrentingsystem.entity.Customer;
 import he186065.fucarrentingsystem.repository.CarRepository;
 import he186065.fucarrentingsystem.entity.Car;
+import he186065.fucarrentingsystem.entity.CarProducer;
 import he186065.fucarrentingsystem.entity.CarRental;
 import he186065.fucarrentingsystem.entity.Review;
 import he186065.fucarrentingsystem.repository.ReviewRepository;
@@ -23,11 +24,13 @@ public class MiscPagesController {
     private final CarRepository carRepository;
     private final CarRentalRepository carRentalRepository;
     private final ReviewRepository reviewRepository;
+    private final he186065.fucarrentingsystem.repository.CarProducerRepository carProducerRepository;
 
-    public MiscPagesController(CarRepository carRepository, CarRentalRepository carRentalRepository, ReviewRepository reviewRepository) {
+    public MiscPagesController(CarRepository carRepository, CarRentalRepository carRentalRepository, ReviewRepository reviewRepository, he186065.fucarrentingsystem.repository.CarProducerRepository carProducerRepository) {
         this.carRepository = carRepository;
         this.carRentalRepository = carRentalRepository;
         this.reviewRepository = reviewRepository;
+        this.carProducerRepository = carProducerRepository;
     }
 
     @GetMapping("/rent")
@@ -35,7 +38,13 @@ public class MiscPagesController {
                        Model model,
                        @org.springframework.web.bind.annotation.RequestParam(name = "q", required = false) String q,
                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                       @RequestParam(name = "size", required = false, defaultValue = "8") int size){
+                       @RequestParam(name = "size", required = false, defaultValue = "8") int size,
+                       @RequestParam(name = "producerId", required = false) Integer producerId,
+                       @RequestParam(name = "color", required = false) String color,
+                       @RequestParam(name = "modelYear", required = false) Integer modelYear,
+                       @RequestParam(name = "capacity", required = false) Integer capacity,
+                       @RequestParam(name = "minPrice", required = false) java.math.BigDecimal minPrice,
+                       @RequestParam(name = "maxPrice", required = false) java.math.BigDecimal maxPrice){
         Object o = session.getAttribute("currentUser");
         if(o instanceof Customer) model.addAttribute("currentUser", (Customer)o);
         // pageable fetch for available cars
@@ -43,14 +52,24 @@ public class MiscPagesController {
         if (size <= 0) size = 8;
         Pageable pageable = PageRequest.of(page, size);
         Page<Car> carPage;
-        if(q != null && !q.trim().isEmpty()){
-            String tq = q.trim();
-            carPage = carRepository.searchAvailableByNameOrProducer(tq, "AVAILABLE", pageable);
-            model.addAttribute("q", tq);
+        // populate producer list for filter dropdown
+        java.util.List<CarProducer> producers = carProducerRepository.findAll();
+        model.addAttribute("producers", producers);
+
+        if((q != null && !q.trim().isEmpty()) || producerId != null || (color != null && !color.trim().isEmpty()) || modelYear != null || capacity != null || minPrice != null || maxPrice != null){
+            String tq = (q == null) ? null : q.trim();
+            carPage = carRepository.searchAvailableWithFilters(tq, "AVAILABLE", producerId, (color == null || color.trim().isEmpty()) ? null : color.trim(), modelYear, capacity, minPrice, maxPrice, pageable);
+            model.addAttribute("q", tq != null ? tq : "");
         } else {
             carPage = carRepository.findByStatusIgnoreCase("AVAILABLE", pageable);
             model.addAttribute("q", "");
         }
+        model.addAttribute("producerId", producerId);
+        model.addAttribute("color", color);
+        model.addAttribute("modelYear", modelYear);
+        model.addAttribute("capacity", capacity);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("carPage", carPage);
         model.addAttribute("availableCars", carPage.getContent());
         model.addAttribute("currentPage", carPage.getNumber());
