@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${car.carName} + ' — FU Car'">Chi tiết xe</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+  <link rel="stylesheet" th:href="@{/font/font-awesome-pro-v6-6.2.0/css/all.min.css}" />
+</head>
+<body>
+  <div th:insert="~{fragments/header :: site-header}"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <div class="car-detail-card">
+        <div class="car-detail-media">
+          <img th:src="@{/img/car-placeholder.png}" th:alt="${car.carName}" />
+        </div>
+        <div class="car-detail-body">
+          <h1 th:text="${car.carName}">Car name</h1>
+          <div class="muted">Thương hiệu: <span th:text="${car.producer != null ? car.producer.producerName : 'N/A'}">Producer</span></div>
+          <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>
+          <div class="meta">
+            <span th:text="${car.carModelYear}"></span> • <span th:text="${car.color}"></span> • <span th:text="${car.capacity}"></span> chỗ
+          </div>
+          <p class="description" th:text="${car.description}"></p>
+
+          <div style="margin-top:18px;display:flex;gap:12px">
+            <a th:href="@{'/rent/book/' + ${car.carId}}" class="btn btn-primary">Thuê ngay</a>
+            <a th:href="@{/rent}" class="btn btn-secondary">Quay lại</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+  <script th:src="@{/js/auth.js}"></script>
+</body>
+</html>
