@@ -53,7 +53,10 @@
               </div>
               <div>
                 <strong>Trạng thái:</strong>
-                <div th:text="${car.status}"></div>
+                <div>
+                  <span th:if="${car.status} == 'AVAILABLE'" class="status-available" th:text="${car.status}"></span>
+                  <span th:unless="${car.status} == 'AVAILABLE'" th:text="${car.status}"></span>
+                </div>
               </div>
               <div>
                 <strong>Ngày nhập:</strong>
