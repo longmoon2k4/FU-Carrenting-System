@@ -25,4 +25,18 @@ public class GlobalControllerAdvice {
         }catch(Exception ignored){}
         return null;
     }
+
+    @ModelAttribute("isAdmin")
+    public boolean isAdmin(HttpSession session){
+        try{
+            Object o = session.getAttribute("currentUser");
+            if(o instanceof Customer){
+                Customer c = (Customer)o;
+                if(c.getAccount() != null && c.getAccount().getRole() != null){
+                    return "ADMIN".equalsIgnoreCase(c.getAccount().getRole());
+                }
+            }
+        }catch(Exception ignored){}
+        return false;
+    }
 }
