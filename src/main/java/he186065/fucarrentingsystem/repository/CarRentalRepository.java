@@ -10,8 +10,13 @@ import java.util.List;
 
 public interface CarRentalRepository extends JpaRepository<CarRental, Integer> {
 
-	@Query("SELECT COUNT(r) FROM CarRental r WHERE r.car.carId = :carId AND NOT (r.returnDate <= :pickup OR r.pickupDate >= :ret)")
+	// count overlapping rentals for a car, ignoring rentals that are already RETURNED
+	@Query("SELECT COUNT(r) FROM CarRental r WHERE r.car.carId = :carId AND LOWER(r.status) <> 'returned' AND NOT (r.returnDate <= :pickup OR r.pickupDate >= :ret)")
 	long countOverlapping(@Param("carId") Integer carId, @Param("pickup") java.time.LocalDate pickup, @Param("ret") java.time.LocalDate ret);
+
+	// count overlapping rentals for a car excluding a specific rental id (used when updating), ignoring RETURNED rentals
+	@Query("SELECT COUNT(r) FROM CarRental r WHERE r.car.carId = :carId AND r.carRentalId <> :rentalId AND LOWER(r.status) <> 'returned' AND NOT (r.returnDate <= :pickup OR r.pickupDate >= :ret)")
+	long countOverlappingExcluding(@Param("carId") Integer carId, @Param("pickup") java.time.LocalDate pickup, @Param("ret") java.time.LocalDate ret, @Param("rentalId") Integer rentalId);
 
 	@Query("SELECT r FROM CarRental r WHERE r.customer.customerId = :customerId ORDER BY r.pickupDate DESC")
 	Page<CarRental> findByCustomerIdPaged(@Param("customerId") Integer customerId, Pageable pageable);
