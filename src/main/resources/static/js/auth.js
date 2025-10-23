@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const menu = document.querySelector('.header-middle-right-menu');
       if (menu) {
         if (user && user.email) {
-          menu.innerHTML = '\n                            <li><a id="profile" href="/profile"><i class="fa-light fa-user"></i> Hồ sơ</a></li>\n                            <li><a id="logout" href="#"><i class="fa-light fa-right-from-bracket"></i> Đăng xuất</a></li>\n                        ';
+          menu.innerHTML = '\n                            <li><a id="profile" href="/profile"><i class="fa-light fa-user"></i> Hồ sơ</a></li>\n                            <li><a id="transactions" href="/transactions"><i class="fa-light fa-list"></i> Lịch sử GD</a></li>\n                            <li><a id="logout" href="#"><i class="fa-light fa-right-from-bracket"></i> Đăng xuất</a></li>\n                        ';
         } else {
           menu.innerHTML = '\n                            <li><a id="login" href="#" data-auth="login"><i class="fa-light fa-right-to-bracket"></i> Đăng nhập</a></li>\n                            <li><a id="signup" href="#" data-auth="register"><i class="fa-light fa-user-plus"></i> Đăng ký</a></li>\n                        ';
         }
@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
     try { localStorage.removeItem('furs_user'); } catch (e) { }
     updateHeaderUser(null);
   }
+
+  // expose small helpers so other inline scripts (profile page etc.) can reuse them
+  try { window.showToast = showToast; window.setCurrentUser = setCurrentUser; window.clearCurrentUser = clearCurrentUser; } catch (e) { /* noop */ }
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"'`]/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#39;", "`": "&#96;" })[m]; });
@@ -125,12 +128,16 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
           .then(() => {
             clearCurrentUser();
-            showToast('Đã đăng xuất', 'success');
+            try{ showToast('Đã đăng xuất', 'success'); }catch(e){}
+            // redirect to home
+            try{ window.location.href = 'http://localhost:8080/'; }catch(e){}
           })
           .catch(err => {
             // still clear local state
             clearCurrentUser();
-            showToast('Đã đăng xuất', 'success');
+            try{ showToast('Đã đăng xuất', 'success'); }catch(e){}
+            // redirect to home even on error
+            try{ window.location.href = 'http://localhost:8080/'; }catch(e){}
           });
       }
     } catch (err) { console.error('[auth.js] logout handler error', err); }

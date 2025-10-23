@@ -385,3 +385,54 @@ body{background:var(--bg);color:var(--primary);}
   .site-banner-inner.glow .banner-cta{padding:6px 10px;font-size:14px}
 }
 
+/* ===== Profile page / account settings styles ===== */
+/* Scoped by presence of #profile-form so it won't affect other pages */
+#profile-form{
+  max-width:920px;
+  margin:22px auto 48px;
+  background:var(--card-bg);
+  padding:22px;
+  border-radius:12px;
+  box-shadow:0 14px 40px rgba(16,24,40,0.06);
+  display:grid;
+  gap:14px;
+  align-items:start;
+}
+
+#profile-form > div{display:flex;flex-direction:column}
+#profile-form label{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600}
+#profile-form input[type="text"],
+#profile-form input[type="email"],
+#profile-form input[type="tel"],
+#profile-form input[type="date"],
+#profile-form select,
+#profile-form textarea{
+  padding:10px 12px;border-radius:10px;border:1px solid #e7e7ea;background:#fbfdff;font-size:14px;color:var(--primary);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+#profile-form input:focus, #profile-form textarea:focus, #profile-form select:focus{outline:none;border-color:rgba(249,115,22,0.55);box-shadow:0 6px 18px rgba(249,115,22,0.08)}
+
+/* Make submit button visually prominent and aligned to the right on wide screens */
+#profile-form > div:last-child{grid-column:1/-1;text-align:right}
+#profile-form button{padding:10px 16px;border-radius:10px;background:var(--accent);border:0;color:#fff;font-weight:700;cursor:pointer;transition:transform .12s ease,box-shadow .12s}
+#profile-form button:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(249,115,22,0.12)}
+
+/* Two-column layout on larger viewports */
+@media (min-width:768px){
+  #profile-form{grid-template-columns:repeat(2,1fr);}
+  /* make certain fields span two columns if they need more space (fallback) */
+  #profile-form .full{grid-column:1/-1}
+}
+
+/* Heading spacing so content clears the fixed header nicely */
+main.container > h2{margin-top:calc(var(--header-height) + 12px);font-size:20px;color:var(--primary);font-weight:700}
+
+/* Small screens: stack everything and increase touch targets */
+@media (max-width:420px){
+  #profile-form{padding:16px;gap:12px}
+  #profile-form button{width:100%}
+  #profile-form > div:last-child{text-align:center}
+}
+
+

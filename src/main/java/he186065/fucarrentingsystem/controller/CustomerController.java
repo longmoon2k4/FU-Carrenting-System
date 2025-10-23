@@ -34,8 +34,13 @@ public class CustomerController {
             existing.setLicenceNumber(c.getLicenceNumber());
             existing.setLicenceDate(c.getLicenceDate());
             existing.setEmail(c.getEmail());
-            existing.setPassword(c.getPassword());
-            existing.setAccount(c.getAccount());
+            // Only update password when client provided a non-empty value.
+            if (c.getPassword() != null && !c.getPassword().isBlank()) {
+                existing.setPassword(c.getPassword());
+            }
+            // Do not overwrite the account association on profile updates unless explicitly required.
+            // Setting account to null here caused Hibernate not-null violations when client payload omitted account.
+            // existing.setAccount(c.getAccount());
             repo.save(existing);
             return ResponseEntity.ok(existing);
         }).orElseGet(() -> ResponseEntity.notFound().build());

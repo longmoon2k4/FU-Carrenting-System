@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hồ sơ</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+  <link rel="stylesheet" th:href="@{/font/font-awesome-pro-v6-6.2.0/css/all.min.css}" />
+</head>
+<body>
+<div th:replace="fragments/header :: site-header"></div>
+
+<main class="container">
+  <h2>Hồ sơ của tôi</h2>
+  <form id="profile-form">
+    <div>
+      <label>Họ và tên</label>
+      <input name="customerName" type="text" />
+    </div>
+    <div>
+      <label>Email</label>
+      <input name="email" type="email" />
+    </div>
+    <div>
+      <label>Số điện thoại</label>
+      <input name="mobile" type="tel" />
+    </div>
+    <div>
+      <label>CMND/CCCD</label>
+      <input name="identityCard" type="text" />
+    </div>
+    <div>
+      <label>Số GPLX</label>
+      <input name="licenceNumber" type="text" />
+    </div>
+    <div>
+      <label>Ngày sinh</label>
+      <input name="birthday" type="date" />
+    </div>
+    <div>
+      <label>Ngày cấp GPLX</label>
+      <input name="licenceDate" type="date" />
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+  </form>
+</main>
+
+<script th:src="@{/js/auth.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // load current user injected by model if available
+  const injected = /*[[${currentUser}]]*/ null;
+  // fallback to localStorage
+  let user = null;
+  try{ user = injected || JSON.parse(localStorage.getItem('furs_user')); }catch(e){}
+  const form = document.getElementById('profile-form');
+  if(user && form){
+    form.querySelector('[name="customerName"]').value = user.customerName || '';
+    form.querySelector('[name="email"]').value = user.email || '';
+    form.querySelector('[name="mobile"]').value = user.mobile || '';
+    form.querySelector('[name="identityCard"]').value = user.identityCard || '';
+    form.querySelector('[name="licenceNumber"]').value = user.licenceNumber || '';
+    form.querySelector('[name="birthday"]').value = user.birthday ? user.birthday.substring(0,10) : '';
+    form.querySelector('[name="licenceDate"]').value = user.licenceDate ? user.licenceDate.substring(0,10) : '';
+  }
+  if(!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!user || !user.customerId){ (window.showToast||console.warn)('Không tìm thấy người dùng'); return; }
+    const payload = {
+      customerName: form.querySelector('[name="customerName"]').value,
+      email: form.querySelector('[name="email"]').value,
+      mobile: form.querySelector('[name="mobile"]').value,
+      identityCard: form.querySelector('[name="identityCard"]').value,
+      licenceNumber: form.querySelector('[name="licenceNumber"]').value,
+      birthday: form.querySelector('[name="birthday"]').value || null,
+      licenceDate: form.querySelector('[name="licenceDate"]').value || null
+    };
+    fetch('/api/customers/' + user.customerId, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+      .then(r=>{ if(r.ok) return r.json(); return r.text().then(t=>{throw new Error(t)}); })
+      .then(updated=>{
+        // update localStorage and header
+        try{ localStorage.setItem('furs_user', JSON.stringify(updated)); }catch(e){}
+        try{ (window.setCurrentUser||(()=>{}))(updated); }catch(e){}
+        (window.showToast||console.log)('Cập nhật hồ sơ thành công');
+      }).catch(err=> (window.showToast||console.error)('Cập nhật thất bại: '+err.message));
+  });
+});
+</script>
+</body>
+</html>
