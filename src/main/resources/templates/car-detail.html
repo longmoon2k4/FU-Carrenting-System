@@ -15,6 +15,8 @@
           <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" />
         </div>
         <div class="car-detail-body">
+      <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+      <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
             <h1 th:text="${car.carName}">Car name</h1>
 
             <div class="car-detail-grid">
@@ -76,6 +78,29 @@
               </div>
             </section>
 
+            <section style="margin-top:18px">
+              <h3>Đặt thuê</h3>
+              <div th:if="${car.status} == 'AVAILABLE'">
+                <form id="booking-form" th:action="@{'/rent/book/' + ${car.carId}}" method="post">
+                  <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <label>Nhận:</label>
+                    <input type="date" name="pickupDate" id="pickupDate" th:value="${defaultPickup}" required />
+                    <label>Trả:</label>
+                    <input type="date" name="returnDate" id="returnDate" th:value="${defaultReturn}" required />
+                    <div style="margin-left:12px">Tổng: <strong id="totalPrice">0</strong> VND</div>
+                  </div>
+                  <div style="margin-top:12px;display:flex;gap:12px">
+                    <button type="button" id="calcBtn" class="btn btn-secondary">Tính giá</button>
+                    <button type="submit" id="confirmBtn" class="btn btn-primary">Xác nhận thuê</button>
+                  </div>
+                </form>
+              </div>
+              <div th:unless="${car.status} == 'AVAILABLE'">
+                <div class="alert alert-error">Xe hiện không có sẵn để thuê.</div>
+              </div>
+            </section>
+
             <section style="margin-top:18px" th:if="${car.rentals != null and #lists.size(car.rentals) > 0}">
               <h3>Lịch thuê (gần đây)</h3>
               <ul>
@@ -108,5 +133,37 @@
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>
   <script th:src="@{/js/auth.js}"></script>
+  <script th:inline="javascript">
+    // Booking calculate and confirm
+    (function(){
+      const calcBtn = document.getElementById('calcBtn');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const pickup = document.getElementById('pickupDate');
+      const ret = document.getElementById('returnDate');
+      const totalEl = document.getElementById('totalPrice');
+  const price = /*[[${car.rentPrice}]]*/ 0;
+      function compute(){
+        if(!pickup.value || !ret.value) return 0;
+        const p = new Date(pickup.value);
+        const r = new Date(ret.value);
+        const diff = Math.ceil((r - p) / (1000*60*60*24));
+        return diff > 0 ? diff * price : 0;
+      }
+      if(calcBtn){
+        calcBtn.addEventListener('click', function(){
+          const total = compute();
+          totalEl.textContent = total;
+          if(total <= 0) alert('Khoảng thời gian hoặc ngày không hợp lệ.');
+        });
+      }
+      if(confirmBtn){
+        confirmBtn.addEventListener('click', function(e){
+          const total = compute();
+          if(total <= 0){ e.preventDefault(); alert('Vui lòng chọn ngày nhận/trả hợp lệ.'); return; }
+          if(!confirm('Xác nhận thuê xe? Tổng: ' + total + ' VND')){ e.preventDefault(); }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

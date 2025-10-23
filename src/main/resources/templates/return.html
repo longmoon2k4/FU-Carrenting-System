@@ -11,16 +11,81 @@
   <main class="site-main container">
     <div class="container-inner">
       <h1>Trả xe</h1>
-      <p>Trang placeholder cho chức năng trả xe.</p>
+      <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
       <div th:if="${currentUser}">
         <h3>Xin chào, <span th:text="${currentUser.customerName}"></span></h3>
         <p>Email: <span th:text="${currentUser.email}"></span></p>
+
+        <div th:if="${activeRentals} == null or ${#lists.size(activeRentals)} == 0" class="transactions-empty">
+          <p>Bạn hiện không có thuê xe đang mượn.</p>
+        </div>
+
+        <div th:if="${activeRentals} != null and ${#lists.size(activeRentals)} > 0">
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th>Xe</th>
+                <th>Nhận</th>
+                <th>Trả dự kiến</th>
+                <th>Giá</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${activeRentals}">
+                <td><a th:href="@{'/cars/' + ${r.car.carId}}" th:text="${r.car.carName}"></a></td>
+                <td th:text="${#temporals.format(r.pickupDate,'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(r.returnDate,'dd/MM/yyyy')}"></td>
+                <td th:text="${#numbers.formatDecimal(r.rentPrice,0,'COMMA',0,'POINT')} + ' VND'"></td>
+                <td>
+                  <button type="button" th:attr="data-rental=${r.carRentalId}" class="btn btn-primary open-return-form">Trả xe</button>
+
+                  <form th:action="@{'/return/' + ${r.carRentalId}}" method="post" th:id="${'return-form-' + r.carRentalId}" style="display:none;margin-top:8px">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}" />
+                    <label for="star">Đánh giá (1-5):</label>
+                    <select name="star" aria-label="Đánh giá" style="margin-left:8px">
+                      <option value="">--</option>
+                      <option th:value="1">1</option>
+                      <option th:value="2">2</option>
+                      <option th:value="3">3</option>
+                      <option th:value="4">4</option>
+                      <option th:value="5">5</option>
+                    </select>
+                    <div style="margin-top:8px">
+                      <label for="comment">Bình luận:</label>
+                      <textarea name="comment" rows="2" style="width:100%;margin-top:6px;border-radius:8px;padding:8px;border:1px solid #e6e6e6"></textarea>
+                    </div>
+                    <div style="margin-top:8px;text-align:right">
+                      <button type="submit" class="btn btn-primary">Xác nhận trả</button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div th:insert="fragments/auth-required :: auth-required"></div>
+
+      <div th:if="${currentUser} == null">
+        <div th:insert="fragments/auth-required :: auth-required"></div>
+      </div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>
   <div th:insert="~{fragments/auth-modal :: auth-modal}"></div>
   <script th:src="@{/js/auth.js}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.open-return-form').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-rental');
+          var f = document.getElementById('return-form-' + id);
+          if(!f) return;
+          f.style.display = (f.style.display === 'none' || f.style.display === '') ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
 </body>
 </html>

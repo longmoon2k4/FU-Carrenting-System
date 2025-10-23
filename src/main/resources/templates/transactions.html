@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lịch sử thuê - FU Car</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="~{fragments/header :: site-header}"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <h1>Lịch sử giao dịch</h1>
+
+      <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+      <div th:if="${rentals} != null and ${#lists.size(rentals)} > 0">
+        <table class="transactions-table" style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr>
+              <th>Xe</th>
+              <th>Nhận</th>
+              <th>Trả</th>
+              <th>Giá</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="r : ${rentals}">
+              <td><a th:href="@{'/cars/' + ${r.car.carId}}" th:text="${r.car.carName}"></a></td>
+              <td th:text="${#temporals.format(r.pickupDate,'dd/MM/yyyy')}"></td>
+              <td th:text="${#temporals.format(r.returnDate,'dd/MM/yyyy')}"></td>
+              <td th:text="${#numbers.formatDecimal(r.rentPrice,0,'COMMA',0,'POINT')} + ' VND'"></td>
+              <td th:text="${r.status}"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <nav class="pagination" th:if="${totalPages} &gt; 1" aria-label="Pages" style="margin-top:18px;text-align:center">
+          <a th:if="${currentPage} &gt; 0" th:href="@{/transactions(page=${currentPage - 1},size=${pageSize})}" class="btn">« Trước</a>
+          <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/transactions(page=${i},size=${pageSize})}" th:text="${i + 1}"
+               th:classappend="${i} == ${currentPage} ? ' btn-primary' : ' btn-secondary'" style="margin:0 6px;padding:8px 12px;border-radius:6px;text-decoration:none;color:inherit"></a>
+          </span>
+          <a th:if="${currentPage} &lt; ${totalPages} - 1" th:href="@{/transactions(page=${currentPage + 1},size=${pageSize})}" class="btn">Tiếp »</a>
+        </nav>
+      </div>
+
+      <div th:if="${rentals} == null or ${#lists.size(rentals)} == 0">
+        <p>Bạn chưa có giao dịch nào.</p>
+      </div>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+  <script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

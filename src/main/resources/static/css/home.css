@@ -478,6 +478,11 @@ body{background:var(--bg);color:var(--primary);}
   animation:statusGlow 2.2s ease-in-out infinite;
 }
 
+/* Alerts */
+.alert{padding:10px 12px;border-radius:8px;margin-bottom:12px}
+.alert-success{background:linear-gradient(180deg,#ecfdf5,#f0fff7);color:#03543f;border:1px solid rgba(3,84,63,0.08);box-shadow:0 6px 18px rgba(3,84,63,0.04)}
+.alert-error{background:linear-gradient(180deg,#fff1f2,#fff7f9);color:#7f1d1d;border:1px solid rgba(127,29,29,0.06);box-shadow:0 6px 18px rgba(127,29,29,0.03)}
+
 @keyframes statusGlow{
   0%{box-shadow:0 6px 18px rgba(11,132,87,0.04)}
   50%{box-shadow:0 12px 30px rgba(59, 206, 152, 0.14)}
@@ -542,5 +547,43 @@ main.container > h2{margin-top:calc(var(--header-height) + 12px);font-size:20px;
   #profile-form button{width:100%}
   #profile-form > div:last-child{text-align:center}
 }
+
+/* Transactions page styles */
+.transactions-table{
+  width:100%;
+  border-collapse:collapse;
+  background:var(--card-bg);
+  border:1px solid rgba(16,24,40,0.04);
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 12px 30px rgba(16,24,40,0.04);
+}
+.transactions-table thead{background:linear-gradient(180deg,#fafafa,#ffffff);border-bottom:1px solid rgba(0,0,0,0.04)}
+.transactions-table th{padding:14px 16px;text-align:left;font-size:14px;color:var(--muted);font-weight:700;border-right:1px solid rgba(0,0,0,0.03)}
+.transactions-table th:last-child{border-right:0}
+.transactions-table td{padding:12px 16px;border-top:1px solid rgba(0,0,0,0.03);vertical-align:middle;color:var(--primary);font-size:14px}
+.transactions-table td a{color:var(--accent);text-decoration:none;font-weight:700}
+.transactions-table td a:hover{text-decoration:underline}
+.transactions-table .price{color:var(--accent);font-weight:800}
+
+.transactions-empty{padding:26px;text-align:center;color:var(--muted);background:transparent}
+
+.transactions-meta{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:10px 0 16px}
+
+/* Pagination styling aligned with global buttons */
+.pagination{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:18px}
+.pagination .btn{padding:8px 12px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.06);color:var(--primary);text-decoration:none}
+.pagination .btn-primary{background:var(--accent);color:#fff;border:0}
+.pagination a[aria-current='page'],.pagination .btn-primary{box-shadow:0 8px 24px rgba(15,23,36,0.06)}
+.pagination a{display:inline-block}
+
+@media (max-width:900px){
+  .transactions-table thead{display:none}
+  .transactions-table, .transactions-table tbody, .transactions-table tr, .transactions-table td{display:block;width:100%}
+  .transactions-table tr{margin-bottom:12px;border-radius:10px;overflow:hidden;background:var(--card-bg);box-shadow:0 8px 22px rgba(16,24,40,0.04)}
+  .transactions-table td{display:flex;justify-content:space-between;padding:12px 14px;border-top:0;border-bottom:1px solid rgba(0,0,0,0.03)}
+  .transactions-table td::before{content:attr(data-label);font-weight:700;color:var(--muted);margin-right:8px}
+}
+
 
 
