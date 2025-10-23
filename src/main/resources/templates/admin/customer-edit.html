@@ -6,19 +6,91 @@
   <link rel="stylesheet" th:href="@{/css/home.css}" />
 </head>
 <body>
-  <div th:insert="fragments/header :: site-header"></div>
+  <div th:insert="~{fragments/header :: site-header}"></div>
   <main class="site-main container">
     <div class="container-inner">
       <h1>Edit Customer</h1>
-      <form th:action="@{'/admin/customers/' + ${customer.customerId} + '/edit'}" method="post">
-        <label>Name</label>
-        <input name="customerName" th:value="${customer.customerName}" />
-        <label>Email</label>
-        <input name="email" th:value="${customer.email}" />
-        <label>Mobile</label>
-        <input name="mobile" th:value="${customer.mobile}" />
-        <div style="margin-top:12px"><button class="btn btn-primary">Save</button></div>
-      </form>
+      <div class="admin-form">
+        <div th:if="${validationErrors != null or duplicateFields != null}">
+          <div class="alert alert-error">
+            <strong>Có lỗi khi lưu:</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li th:if="${validationErrors != null and validationErrors.contains('email_invalid')}">Email không hợp lệ.</li>
+              <li th:if="${validationErrors != null and validationErrors.contains('mobile_invalid')}">Số điện thoại không hợp lệ.</li>
+              <li th:if="${duplicateFields != null and duplicateFields.contains('identityCard')}">Số CMND/CCCD đã tồn tại trong hệ thống.</li>
+              <li th:if="${duplicateFields != null and duplicateFields.contains('licenceNumber')}">Số bằng lái đã tồn tại trong hệ thống.</li>
+              <li th:if="${duplicateFields != null and duplicateFields.contains('email')}">Email đã được sử dụng bởi tài khoản khác.</li>
+              <li th:if="${duplicateFields != null and duplicateFields.contains('mobile')}">Số điện thoại đã được sử dụng bởi tài khoản khác.</li>
+            </ul>
+          </div>
+        </div>
+
+        <form th:action="${customer.customerId} != null ? @{/admin/customers/{id}/edit(id=${customer.customerId})} : @{/admin/customers/new}" method="post">
+          <input th:if="${customer.customerId} != null" type="hidden" name="customerId" th:value="${customer.customerId}" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="customerName">Họ và tên</label>
+              <input id="customerName" name="customerName" th:value="${customer.customerName}" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+    <input id="email" type="email" name="email" th:value="${customer.email}"
+      th:classappend="${(validationErrors != null and validationErrors.contains('email_invalid')) or (duplicateOwners != null and duplicateOwners['email'] != null)} ? ' input-error' : ''" required />
+    <div class="field-error" th:if="${duplicateOwners != null and duplicateOwners['email'] != null}">Trùng với tài khoản ID <span th:text="${duplicateOwners['email'].customerId}"></span> - <span th:text="${duplicateOwners['email'].customerName}"></span></div>
+            </div>
+
+            <div class="form-group">
+              <label for="mobile">Số điện thoại</label>
+    <input id="mobile" name="mobile" th:value="${customer.mobile}"
+      th:classappend="${(validationErrors != null and validationErrors.contains('mobile_invalid')) or (duplicateOwners != null and duplicateOwners['mobile'] != null)} ? ' input-error' : ''" />
+    <div class="field-error" th:if="${duplicateOwners != null and duplicateOwners['mobile'] != null}">Trùng với tài khoản ID <span th:text="${duplicateOwners['mobile'].customerId}"></span> - <span th:text="${duplicateOwners['mobile'].customerName}"></span></div>
+            </div>
+
+            <div class="form-group">
+              <label for="birthday">Ngày sinh</label>
+              <input id="birthday" type="date" name="birthday" th:value="${customer.birthday}" />
+            </div>
+
+            <div class="form-group">
+              <label for="identityCard">Số CMND/CCCD</label>
+    <input id="identityCard" name="identityCard" th:value="${customer.identityCard}"
+      th:classappend="${duplicateOwners != null and duplicateOwners['identityCard'] != null} ? ' input-error' : ''" />
+    <div class="field-error" th:if="${duplicateOwners != null and duplicateOwners['identityCard'] != null}">Trùng với tài khoản ID <span th:text="${duplicateOwners['identityCard'].customerId}"></span> - <span th:text="${duplicateOwners['identityCard'].customerName}"></span></div>
+            </div>
+
+            <div class="form-group">
+              <label for="licenceNumber">Số bằng lái</label>
+    <input id="licenceNumber" name="licenceNumber" th:value="${customer.licenceNumber}"
+      th:classappend="${duplicateOwners != null and duplicateOwners['licenceNumber'] != null} ? ' input-error' : ''" />
+    <div class="field-error" th:if="${duplicateOwners != null and duplicateOwners['licenceNumber'] != null}">Trùng với tài khoản ID <span th:text="${duplicateOwners['licenceNumber'].customerId}"></span> - <span th:text="${duplicateOwners['licenceNumber'].customerName}"></span></div>
+            </div>
+
+            <div class="form-group">
+              <label for="licenceDate">Ngày cấp bằng</label>
+              <input id="licenceDate" type="date" name="licenceDate" th:value="${customer.licenceDate}" />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Mật khẩu (để trống nếu không đổi)</label>
+              <input id="password" type="password" name="password" placeholder="••••••••" />
+            </div>
+
+            <div class="form-group">
+              <label for="role">Role tài khoản</label>
+              <select id="role" name="accountRole">
+                <option value="CUSTOMER" th:selected="${customer.account != null and customer.account.role == 'CUSTOMER'}">CUSTOMER</option>
+                <option value="ADMIN" th:selected="${customer.account != null and customer.account.role == 'ADMIN'}">ADMIN</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions" style="margin-top:16px;display:flex;gap:12px;align-items:center">
+            <button class="btn btn-primary">Lưu</button>
+            <a th:href="@{/admin/customers}" class="btn btn-secondary">Hủy</a>
+          </div>
+        </form>
+      </div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>

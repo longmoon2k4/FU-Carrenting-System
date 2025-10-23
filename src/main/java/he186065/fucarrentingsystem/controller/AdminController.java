@@ -25,12 +25,16 @@ public class AdminController {
     private final CarRepository carRepo;
     private final CarRentalRepository rentalRepo;
     private final CarProducerRepository producerRepo;
+    private final he186065.fucarrentingsystem.repository.AccountRepository accountRepo;
+    private final he186065.fucarrentingsystem.repository.ReviewRepository reviewRepo;
 
-    public AdminController(CustomerRepository customerRepo, CarRepository carRepo, CarRentalRepository rentalRepo, CarProducerRepository producerRepo){
+    public AdminController(CustomerRepository customerRepo, CarRepository carRepo, CarRentalRepository rentalRepo, CarProducerRepository producerRepo, he186065.fucarrentingsystem.repository.AccountRepository accountRepo, he186065.fucarrentingsystem.repository.ReviewRepository reviewRepo){
         this.customerRepo = customerRepo;
         this.carRepo = carRepo;
         this.rentalRepo = rentalRepo;
         this.producerRepo = producerRepo;
+        this.accountRepo = accountRepo;
+        this.reviewRepo = reviewRepo;
     }
 
     @GetMapping
@@ -47,8 +51,59 @@ public class AdminController {
         return "admin/customer-edit";
     }
 
+    @GetMapping("/customers/new")
+    public String newCustomer(Model m){
+        // provide empty Customer to reuse edit template
+        Customer c = new Customer();
+        m.addAttribute("customer", c);
+        return "admin/customer-edit";
+    }
+
     @PostMapping("/customers/{id}/edit")
-    public String updateCustomer(@PathVariable Integer id, @ModelAttribute Customer payload){
+    public String updateCustomer(@PathVariable Integer id,
+                                 @ModelAttribute Customer payload,
+                                 @RequestParam(required = false) String accountRole,
+                                 @RequestParam(required = false) String password,
+                                 Model m){
+        // Ensure payload knows the id (helps when we re-render the form after validation errors)
+        if(payload.getCustomerId() == null){
+            payload.setCustomerId(id);
+        }
+
+        // Basic validation: email and mobile format
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        if(payload.getEmail() == null || !payload.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")){
+            errors.add("email_invalid");
+        }
+        if(payload.getMobile() != null && !payload.getMobile().isBlank()){
+            // simple phone check: digits, optional +, length 7-15
+            if(!payload.getMobile().matches("^\\+?[0-9\\- ]{7,15}$")){
+                errors.add("mobile_invalid");
+            }
+        }
+
+        // uniqueness checks (exclude current record) and collect conflicting owners
+        java.util.List<String> dupes = new java.util.ArrayList<>();
+        java.util.Map<String, Customer> duplicateOwners = new java.util.HashMap<>();
+    customerRepo.findByIdentityCard(payload.getIdentityCard()).ifPresent(c -> { if(!java.util.Objects.equals(c.getCustomerId(), id)){ dupes.add("identityCard"); duplicateOwners.put("identityCard", c); } });
+    customerRepo.findByLicenceNumber(payload.getLicenceNumber()).ifPresent(c -> { if(!java.util.Objects.equals(c.getCustomerId(), id)){ dupes.add("licenceNumber"); duplicateOwners.put("licenceNumber", c); } });
+        // also check email and mobile duplicates
+    customerRepo.findByEmail(payload.getEmail()).ifPresent(c -> { if(!java.util.Objects.equals(c.getCustomerId(), id)){ dupes.add("email"); duplicateOwners.put("email", c); } });
+        if(payload.getMobile() != null && !payload.getMobile().isBlank()){
+            customerRepo.findByMobile(payload.getMobile()).ifPresent(c -> { if(!java.util.Objects.equals(c.getCustomerId(), id)){ dupes.add("mobile"); duplicateOwners.put("mobile", c); } });
+        }
+
+        if(!errors.isEmpty() || !dupes.isEmpty()){
+            // return to edit form with messages
+            // Keep submitted payload so admin can correct values; also provide duplicate owner details
+            m.addAttribute("customer", payload);
+            m.addAttribute("validationErrors", errors);
+            m.addAttribute("duplicateFields", dupes);
+            m.addAttribute("duplicateOwners", duplicateOwners);
+            return "admin/customer-edit";
+        }
+
+        // persist changes
         customerRepo.findById(id).ifPresent(existing -> {
             existing.setCustomerName(payload.getCustomerName());
             existing.setEmail(payload.getEmail());
@@ -57,13 +112,94 @@ public class AdminController {
             existing.setLicenceNumber(payload.getLicenceNumber());
             existing.setBirthday(payload.getBirthday());
             existing.setLicenceDate(payload.getLicenceDate());
+            // update password only if provided (simple plaintext as project uses)
+            if(password != null && !password.isBlank()){
+                existing.setPassword(password);
+            }
+            // update account role
+            if(accountRole != null && !accountRole.isBlank()){
+                he186065.fucarrentingsystem.entity.Account acct = accountRepo.findAll().stream()
+                        .filter(a -> accountRole.equalsIgnoreCase(a.getRole()))
+                        .findFirst().orElseGet(() -> {
+                            he186065.fucarrentingsystem.entity.Account a = new he186065.fucarrentingsystem.entity.Account();
+                            a.setAccountName(accountRole.toLowerCase());
+                            a.setRole(accountRole.toUpperCase());
+                            return accountRepo.save(a);
+                        });
+                existing.setAccount(acct);
+            }
+
             customerRepo.save(existing);
         });
         return "redirect:/admin/customers";
     }
 
+    @PostMapping("/customers/new")
+    public String createCustomer(@ModelAttribute Customer payload,
+                                 @RequestParam(required = false) String accountRole,
+                                 @RequestParam(required = false) String password,
+                                 Model m){
+        // Basic validation: email and mobile format
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        if(payload.getEmail() == null || !payload.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")){
+            errors.add("email_invalid");
+        }
+        if(payload.getMobile() != null && !payload.getMobile().isBlank()){
+            if(!payload.getMobile().matches("^\\+?[0-9\\- ]{7,15}$")){
+                errors.add("mobile_invalid");
+            }
+        }
+
+        // uniqueness checks for new record
+        java.util.List<String> dupes = new java.util.ArrayList<>();
+        java.util.Map<String, Customer> duplicateOwners = new java.util.HashMap<>();
+        customerRepo.findByIdentityCard(payload.getIdentityCard()).ifPresent(c -> { dupes.add("identityCard"); duplicateOwners.put("identityCard", c); });
+        customerRepo.findByLicenceNumber(payload.getLicenceNumber()).ifPresent(c -> { dupes.add("licenceNumber"); duplicateOwners.put("licenceNumber", c); });
+        customerRepo.findByEmail(payload.getEmail()).ifPresent(c -> { dupes.add("email"); duplicateOwners.put("email", c); });
+        if(payload.getMobile() != null && !payload.getMobile().isBlank()){
+            customerRepo.findByMobile(payload.getMobile()).ifPresent(c -> { dupes.add("mobile"); duplicateOwners.put("mobile", c); });
+        }
+
+        if(!errors.isEmpty() || !dupes.isEmpty()){
+            m.addAttribute("customer", payload);
+            m.addAttribute("validationErrors", errors);
+            m.addAttribute("duplicateFields", dupes);
+            m.addAttribute("duplicateOwners", duplicateOwners);
+            return "admin/customer-edit";
+        }
+
+        // set account (create if necessary)
+        if(accountRole != null && !accountRole.isBlank()){
+            he186065.fucarrentingsystem.entity.Account acct = accountRepo.findAll().stream()
+                    .filter(a -> accountRole.equalsIgnoreCase(a.getRole()))
+                    .findFirst().orElseGet(() -> {
+                        he186065.fucarrentingsystem.entity.Account a = new he186065.fucarrentingsystem.entity.Account();
+                        a.setAccountName(accountRole.toLowerCase());
+                        a.setRole(accountRole.toUpperCase());
+                        return accountRepo.save(a);
+                    });
+            payload.setAccount(acct);
+        }
+
+        // ensure password (if not set, set a default temporary password)
+        if(password != null && !password.isBlank()){
+            payload.setPassword(password);
+        } else if(payload.getPassword() == null || payload.getPassword().isBlank()){
+            payload.setPassword("changeme");
+        }
+
+        customerRepo.save(payload);
+        return "redirect:/admin/customers";
+    }
+
     @PostMapping("/customers/{id}/delete")
+    @org.springframework.transaction.annotation.Transactional
     public String deleteCustomer(@PathVariable Integer id){
+        // delete related entities first to avoid FK constraint violations
+        rentalRepo.deleteByCustomerCustomerId(id);
+        reviewRepo.deleteByCustomerCustomerId(id);
+
+        // finally delete the customer itself
         customerRepo.deleteById(id);
         return "redirect:/admin/customers";
     }

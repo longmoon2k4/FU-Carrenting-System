@@ -10,8 +10,13 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(new LoginRequiredInterceptor())
-        .addPathPatterns("/**"); // Chặn tất cả, loại trừ xử lý trong Interceptor
+  // LoginRequiredInterceptor blocks unauthenticated requests globally (allows static and /api/auth)
+  registry.addInterceptor(new LoginRequiredInterceptor())
+    .addPathPatterns("/**");
+
+  // AdminRequiredInterceptor ensures only ADMIN role can access /admin/**
+  registry.addInterceptor(new AdminRequiredInterceptor())
+    .addPathPatterns("/admin/**");
   }
 
   @Override

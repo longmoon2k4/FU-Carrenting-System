@@ -22,6 +22,9 @@ public interface CarRentalRepository extends JpaRepository<CarRental, Integer> {
 	Page<CarRental> findByCustomerIdPaged(@Param("customerId") Integer customerId, Pageable pageable);
 	List<CarRental> findByCustomerCustomerIdAndStatusIgnoreCase(Integer customerId, String status);
 
+	// delete all rentals belonging to a customer
+	void deleteByCustomerCustomerId(Integer customerId);
+
 	// count rentals for a car (any status)
 	long countByCarCarId(Integer carId);
 
