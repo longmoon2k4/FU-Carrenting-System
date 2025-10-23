@@ -480,8 +480,8 @@ body{background:var(--bg);color:var(--primary);}
 
 @keyframes statusGlow{
   0%{box-shadow:0 6px 18px rgba(11,132,87,0.04)}
-  50%{box-shadow:0 12px 30px rgba(11,132,87,0.14)}
-  100%{box-shadow:0 6px 18px rgba(11,132,87,0.04)}
+  50%{box-shadow:0 12px 30px rgba(59, 206, 152, 0.14)}
+  100%{box-shadow:0 6px 18px rgba(169, 231, 208, 0.04)}
 }
 
 @media (max-width:900px){
