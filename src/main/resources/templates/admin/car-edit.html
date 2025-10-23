@@ -9,18 +9,87 @@
   <div th:insert="fragments/header :: site-header"></div>
   <main class="site-main container">
     <div class="container-inner">
-      <h1>Edit Car</h1>
-      <form th:action="@{'/admin/cars/' + ${car.carId} + '/edit'}" method="post">
-        <label>Name</label>
-        <input name="carName" th:value="${car.carName}" />
-        <label>Year</label>
-        <input name="carModelYear" th:value="${car.carModelYear}" />
-        <label>Price</label>
-        <input name="rentPrice" th:value="${car.rentPrice}" />
-        <label>Status</label>
-        <input name="status" th:value="${car.status}" />
-        <div style="margin-top:12px"><button class="btn btn-primary">Save</button></div>
-      </form>
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <h1 th:text="${car.carId} != null ? 'Chỉnh sửa xe' : 'Thêm xe'"></h1>
+          <a th:href="@{/admin/cars}" class="btn btn-secondary">Back to list</a>
+        </div>
+
+        <div class="admin-form">
+          <form th:action="${car.carId} != null ? @{/admin/cars/{id}/edit(id=${car.carId})} : @{/admin/cars/new}" method="post" enctype="multipart/form-data">
+            <input th:if="${car.carId} != null" type="hidden" name="carId" th:value="${car.carId}" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="carName">Tên xe</label>
+                <input id="carName" name="carName" th:value="${car.carName}" required />
+              </div>
+
+              <div class="form-group">
+                <label for="carModelYear">Năm sản xuất</label>
+                <input id="carModelYear" name="carModelYear" type="number" min="1900" max="2100" th:value="${car.carModelYear}" required />
+              </div>
+
+              <div class="form-group">
+                <label for="color">Màu sắc</label>
+                <input id="color" name="color" th:value="${car.color}" />
+              </div>
+
+              <div class="form-group">
+                <label for="capacity">Số chỗ</label>
+                <input id="capacity" name="capacity" type="number" min="1" th:value="${car.capacity}" />
+              </div>
+
+              <div class="form-group">
+                <label for="rentPrice">Giá thuê (per day)</label>
+                <input id="rentPrice" name="rentPrice" type="number" step="0.01" th:value="${car.rentPrice}" required />
+              </div>
+
+              <div class="form-group">
+                <label for="status">Trạng thái</label>
+                <select id="status" name="status">
+                  <option value="AVAILABLE" th:selected="${car.status} == 'AVAILABLE'">AVAILABLE</option>
+                  <option value="RENTED" th:selected="${car.status} == 'RENTED'">RENTED</option>
+                  <option value="INACTIVE" th:selected="${car.status} == 'INACTIVE'">INACTIVE</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="producer">Hãng sản xuất</label>
+                <select id="producer" name="producerId" required>
+                  <option th:each="p : ${producers}" th:value="${p.producerId}" th:text="${p.producerName}" th:selected="${car.producer != null and car.producer.producerId == p.producerId}"></option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="importDate">Ngày nhập</label>
+                <input id="importDate" name="importDate" type="date" th:value="${car.importDate}" />
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1">
+                <label for="description">Mô tả</label>
+                <textarea id="description" name="description" rows="4" style="width:100%" th:text="${car.description}"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="imageUrl">Hình (URL)</label>
+                <input id="imageUrl" name="imageUrl" th:value="${car.imageUrl}" />
+                <div style="margin-top:8px">
+                  <label for="imageFile" style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">Hoặc tải lên ảnh</label>
+                  <input id="imageFile" name="imageFile" type="file" accept="image/*" />
+                </div>
+                <div style="margin-top:10px">
+                  <img th:if="${car.imageUrl} != null" th:src="@{${car.imageUrl}}" alt="Car image" style="max-width:240px;border-radius:8px;display:block;border:1px solid #eee;padding:6px;background:#fff" />
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:12px">
+              <button class="btn btn-primary">Lưu</button>
+              <a th:href="@{/admin/cars}" class="btn btn-secondary">Hủy</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>

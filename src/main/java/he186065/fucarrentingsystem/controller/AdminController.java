@@ -216,8 +216,16 @@ public class AdminController {
         return "admin/car-edit";
     }
 
+    @GetMapping("/cars/new")
+    public String newCar(Model m){
+        Car c = new Car();
+        m.addAttribute("car", c);
+        m.addAttribute("producers", producerRepo.findAll());
+        return "admin/car-edit";
+    }
+
     @PostMapping("/cars/{id}/edit")
-    public String updateCar(@PathVariable Integer id, @ModelAttribute Car payload){
+    public String updateCar(@PathVariable Integer id, @ModelAttribute Car payload, @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile){
         carRepo.findById(id).ifPresent(existing -> {
             existing.setCarName(payload.getCarName());
             existing.setCarModelYear(payload.getCarModelYear());
@@ -226,8 +234,70 @@ public class AdminController {
             existing.setDescription(payload.getDescription());
             existing.setRentPrice(payload.getRentPrice());
             existing.setStatus(payload.getStatus());
+            existing.setImageUrl(payload.getImageUrl());
+            if(payload.getProducer() != null && payload.getProducer().getProducerId() != null){
+                producerRepo.findById(payload.getProducer().getProducerId()).ifPresent(existing::setProducer);
+            }
+            if(payload.getImportDate() != null){
+                existing.setImportDate(payload.getImportDate());
+            }
+            // handle uploaded image file
+            if(imageFile != null && !imageFile.isEmpty()){
+                try{
+                    java.nio.file.Path imagesDir = java.nio.file.Paths.get("src/main/resources/static/img/cars");
+                    java.nio.file.Files.createDirectories(imagesDir);
+                    String original = imageFile.getOriginalFilename();
+                    String ext = "";
+                    if(original != null && original.contains(".")){
+                        ext = original.substring(original.lastIndexOf('.'));
+                    }
+                    String fn = "car_" + System.currentTimeMillis() + ext;
+                    java.nio.file.Path dst = imagesDir.resolve(fn);
+                    try(java.io.InputStream in = imageFile.getInputStream()){
+                        java.nio.file.Files.copy(in, dst, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    existing.setImageUrl("/img/cars/" + fn);
+                }catch(Exception ex){
+                    // ignore failure to save image, keep existing imageUrl
+                }
+            }
             carRepo.save(existing);
         });
+        return "redirect:/admin/cars";
+    }
+
+    @PostMapping("/cars/new")
+    public String createCar(@ModelAttribute Car payload, @RequestParam(required = false) Integer producerId, @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile){
+        if(producerId != null){
+            producerRepo.findById(producerId).ifPresent(payload::setProducer);
+        }
+        if(payload.getImportDate() == null){
+            payload.setImportDate(java.time.LocalDate.now());
+        }
+        if(payload.getStatus() == null || payload.getStatus().isBlank()){
+            payload.setStatus("AVAILABLE");
+        }
+        // handle uploaded image file
+        if(imageFile != null && !imageFile.isEmpty()){
+            try{
+                java.nio.file.Path imagesDir = java.nio.file.Paths.get("src/main/resources/static/img/cars");
+                java.nio.file.Files.createDirectories(imagesDir);
+                String original = imageFile.getOriginalFilename();
+                String ext = "";
+                if(original != null && original.contains(".")){
+                    ext = original.substring(original.lastIndexOf('.'));
+                }
+                String fn = "car_" + System.currentTimeMillis() + ext;
+                java.nio.file.Path dst = imagesDir.resolve(fn);
+                try(java.io.InputStream in = imageFile.getInputStream()){
+                    java.nio.file.Files.copy(in, dst, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                }
+                payload.setImageUrl("/img/cars/" + fn);
+            }catch(Exception ex){
+                // ignore
+            }
+        }
+        carRepo.save(payload);
         return "redirect:/admin/cars";
     }
 

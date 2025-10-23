@@ -1,35 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
   <title>Admin - Cars</title>
   <link rel="stylesheet" th:href="@{/css/home.css}" />
 </head>
+
 <body>
   <div th:insert="fragments/header :: site-header"></div>
   <main class="site-main container">
     <div class="container-inner">
-      <h1>Quản lý xe</h1>
-      <table style="width:100%">
-        <thead><tr><th>ID</th><th>Name</th><th>Year</th><th>Status</th><th>Price</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr th:each="c : ${cars}">
-            <td th:text="${c.carId}"></td>
-            <td th:text="${c.carName}"></td>
-            <td th:text="${c.carModelYear}"></td>
-            <td th:text="${c.status}"></td>
-            <td th:text="${c.rentPrice}"></td>
-            <td>
-              <a th:href="@{'/admin/cars/' + ${c.carId} + '/edit'}" class="btn">Edit</a>
-              <form th:action="@{'/admin/cars/' + ${c.carId} + '/delete'}" method="post" style="display:inline">
-                <button type="submit" class="btn btn-secondary">Delete/Disable</button>
-              </form>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <h1 style="margin:0">Quản lý xe</h1>
+          <a th:href="@{/admin/cars/new}" class="btn btn-primary">Thêm xe</a>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Year</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="c : ${cars}">
+                <td th:text="${c.carId}"></td>
+                <td th:text="${c.carName}"></td>
+                <td th:text="${c.carModelYear}"></td>
+                <td th:text="${c.status}"></td>
+                <td th:text="${c.rentPrice}"></td>
+                <td class="actions">
+                  <div class="list-actions">
+                    <a th:href="@{'/admin/cars/' + ${c.carId} + '/edit'}" class="btn icon-btn small" title="Edit">
+                      <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                      <span class="sr-only">Edit</span>
+                    </a>
+                    <form th:action="@{'/admin/cars/' + ${c.carId} + '/delete'}" method="post" style="display:inline">
+                      <button type="submit" class="btn icon-btn small danger" title="Delete/Disable">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        <span class="sr-only">Delete</span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>
 </body>
+
 </html>
