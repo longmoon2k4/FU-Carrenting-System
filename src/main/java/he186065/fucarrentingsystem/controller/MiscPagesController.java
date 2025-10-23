@@ -24,6 +24,7 @@ public class MiscPagesController {
     @GetMapping("/rent")
     public String rent(HttpSession session,
                        Model model,
+                       @org.springframework.web.bind.annotation.RequestParam(name = "q", required = false) String q,
                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                        @RequestParam(name = "size", required = false, defaultValue = "8") int size){
         Object o = session.getAttribute("currentUser");
@@ -32,7 +33,15 @@ public class MiscPagesController {
         if (page < 0) page = 0;
         if (size <= 0) size = 8;
         Pageable pageable = PageRequest.of(page, size);
-        Page<Car> carPage = carRepository.findByStatusIgnoreCase("AVAILABLE", pageable);
+        Page<Car> carPage;
+        if(q != null && !q.trim().isEmpty()){
+            String tq = q.trim();
+            carPage = carRepository.searchAvailableByNameOrProducer(tq, "AVAILABLE", pageable);
+            model.addAttribute("q", tq);
+        } else {
+            carPage = carRepository.findByStatusIgnoreCase("AVAILABLE", pageable);
+            model.addAttribute("q", "");
+        }
         model.addAttribute("carPage", carPage);
         model.addAttribute("availableCars", carPage.getContent());
         model.addAttribute("currentPage", carPage.getNumber());

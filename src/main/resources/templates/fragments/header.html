@@ -21,14 +21,14 @@
                 </nav>
                 <!-- search + filter -->
                 <div class="header-search-wrapper">
-                    <form class="header-search" action="/cars" method="get">
+                    <form class="header-search" action="/rent" method="get">
                         <button type="submit" class="search-btn" aria-label="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        <input type="search" name="q" class="search-input" placeholder="Tìm kiếm xe theo tên hoặc mô tả..." />
+                        <input type="search" name="q" class="search-input" placeholder="Tìm kiếm xe theo tên hoặc mô tả..." th:value="${q}" />
                         <button type="button" class="filter-toggle" aria-label="Lọc"><i class="fa-solid fa-filter"></i></button>
                     </form>
                     <div class="search-filter-panel" aria-hidden="true">
-                        <form class="filter-form" action="/cars" method="get">
-                            <input type="hidden" name="q" />
+                        <form class="filter-form" action="/rent" method="get">
+                            <input type="hidden" name="q" th:value="${q}" />
                             <div class="filter-row">
                                 <label>Hãng</label>
                                 <select name="producerId">

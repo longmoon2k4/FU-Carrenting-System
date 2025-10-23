@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Cars - FU Car Renting</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+
+  <main class="site-main container">
+    <section class="cars-search">
+      <form method="get" action="/cars">
+        <input type="text" name="q" placeholder="Tìm theo tên xe hoặc hãng" th:value="${q}" />
+        <button type="submit" class="btn">Tìm</button>
+      </form>
+
+      <div class="cars-list">
+        <div th:if="${availableCars == null or #lists.isEmpty(availableCars)}">
+          <p>Không có kết quả.</p>
+        </div>
+        <div th:each="car : ${availableCars}" class="car-card">
+          <div class="car-thumb">
+            <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" />
+          </div>
+          <div class="car-info">
+            <h4 th:text="${car.carName}"></h4>
+            <div th:text="${car.producer.producerName}"></div>
+            <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>
+            <a th:href="@{'/cars/' + ${car.carId}}" class="btn btn-secondary">Chi tiết</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <a th:if="${currentPage} &gt; 0" th:href="@{'/cars?q=' + ${q} + '&page=' + (${currentPage} - 1) + '&size=' + ${pageSize}}" class="btn">« Trước</a>
+        <span th:text="'Trang ' + (${currentPage} + 1) + ' / ' + ${totalPages}"></span>
+        <a th:if="${currentPage} &lt; ${totalPages} - 1" th:href="@{'/cars?q=' + ${q} + '&page=' + (${currentPage} + 1) + '&size=' + ${pageSize}}" class="btn">Tiếp »</a>
+      </div>
+    </section>
+  </main>
+
+  <div th:insert="fragments/footer :: site-footer"></div>
+  <script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

@@ -16,6 +16,11 @@
         <h3>Xin chào, <span th:text="${currentUser.customerName}"></span></h3>
         <p>Email: <span th:text="${currentUser.email}"></span></p>
 
+        <form method="get" action="/rent" style="margin:16px 0;display:flex;gap:8px;align-items:center">
+          <input type="text" name="q" placeholder="Tìm theo tên xe hoặc hãng" th:value="${q}" />
+          <button type="submit" class="btn">Tìm</button>
+        </form>
+
         <section class="featured-cars fade-in">
           <h2>Xe khả dụng</h2>
           <div class="car-grid">
@@ -35,12 +40,12 @@
         </section>
 
         <nav class="pagination" th:if="${totalPages} &gt; 1" aria-label="Car pages" style="margin-top:18px;text-align:center">
-          <a th:if="${currentPage} &gt; 0" th:href="@{'/rent?page=' + (${currentPage} - 1) + '&size=' + ${pageSize}}" class="btn">« Trước</a>
+          <a th:if="${currentPage} &gt; 0" th:href="@{/rent(page=${currentPage - 1},size=${pageSize},q=${q})}" class="btn">« Trước</a>
           <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{'/rent?page=' + ${i} + '&size=' + ${pageSize}}" th:text="${i + 1}"
+            <a th:href="@{/rent(page=${i},size=${pageSize},q=${q})}" th:text="${i + 1}"
                th:classappend="${i} == ${currentPage} ? ' btn-primary' : ' btn-secondary'" style="margin:0 6px;padding:8px 12px;border-radius:6px;text-decoration:none;color:inherit"></a>
           </span>
-          <a th:if="${currentPage} &lt; ${totalPages} - 1" th:href="@{'/rent?page=' + (${currentPage} + 1) + '&size=' + ${pageSize}}" class="btn">Tiếp »</a>
+          <a th:if="${currentPage} &lt; ${totalPages} - 1" th:href="@{/rent(page=${currentPage + 1},size=${pageSize},q=${q})}" class="btn">Tiếp »</a>
         </nav>
       </div>
       <!-- show auth-required overlay when not logged in -->
