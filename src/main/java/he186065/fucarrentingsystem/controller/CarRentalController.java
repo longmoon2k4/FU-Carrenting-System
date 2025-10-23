@@ -16,7 +16,12 @@ import java.util.List;
 @RequestMapping("/api/rentals")
 public class CarRentalController {
     private final CarRentalRepository repo;
-    public CarRentalController(CarRentalRepository repo) { this.repo = repo; }
+    private final he186065.fucarrentingsystem.repository.CarRepository carRepo;
+
+    public CarRentalController(CarRentalRepository repo, he186065.fucarrentingsystem.repository.CarRepository carRepo) {
+        this.repo = repo;
+        this.carRepo = carRepo;
+    }
 
     @GetMapping
     public List<CarRental> list() { return repo.findAll(); }
@@ -27,7 +32,16 @@ public class CarRentalController {
     }
 
     @PostMapping
-    public CarRental create(@RequestBody CarRental r) { return repo.save(r); }
+    public CarRental create(@RequestBody CarRental r) {
+        CarRental saved = repo.save(r);
+        // update car status when rental is created/marked RENTED
+        if(saved.getCar() != null && "RENTED".equalsIgnoreCase(saved.getStatus())){
+            var car = saved.getCar();
+            car.setStatus("RENTED");
+            carRepo.save(car);
+        }
+        return saved;
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<CarRental> update(@PathVariable Integer id, @RequestBody CarRental r) {
@@ -37,8 +51,27 @@ public class CarRentalController {
             existing.setPickupDate(r.getPickupDate());
             existing.setReturnDate(r.getReturnDate());
             existing.setRentPrice(r.getRentPrice());
-            existing.setStatus(r.getStatus());
+            String oldStatus = existing.getStatus();
+            String newStatus = r.getStatus();
+            existing.setStatus(newStatus);
             repo.save(existing);
+
+            // If status changed, update car accordingly
+            if(existing.getCar() != null && newStatus != null){
+                var car = existing.getCar();
+                if("RENTED".equalsIgnoreCase(newStatus)){
+                    car.setStatus("RENTED");
+                    carRepo.save(car);
+                } else if("RETURNED".equalsIgnoreCase(newStatus)){
+                    car.setStatus("AVAILABLE");
+                    carRepo.save(car);
+                } else if(oldStatus != null && !oldStatus.equalsIgnoreCase(newStatus) && !"RENTED".equalsIgnoreCase(newStatus)){
+                    // For other transitions away from RENTED, ensure AVAILABLE
+                    car.setStatus("AVAILABLE");
+                    carRepo.save(car);
+                }
+            }
+
             return ResponseEntity.ok(existing);
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
