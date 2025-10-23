@@ -302,13 +302,26 @@ public class AdminController {
     }
 
     @PostMapping("/cars/{id}/delete")
-    public String deleteCar(@PathVariable Integer id){
+    public String deleteCar(@PathVariable Integer id, org.springframework.web.servlet.mvc.support.RedirectAttributes ra){
+        var opt = carRepo.findById(id);
+        if(opt.isEmpty()){
+            ra.addFlashAttribute("deleteError", "Xe không tồn tại.");
+            return "redirect:/admin/cars";
+        }
+        var car = opt.get();
+        // Only allow deleting when status is AVAILABLE
+        if(car.getStatus() == null || !"AVAILABLE".equalsIgnoreCase(car.getStatus())){
+            ra.addFlashAttribute("deleteError", "Xe chỉ có thể xoá khi trạng thái là AVAILABLE.");
+            return "redirect:/admin/cars";
+        }
         long count = rentalRepo.countByCarCarId(id);
         if(count > 0){
-            carRepo.findById(id).ifPresent(c -> { c.setStatus("INACTIVE"); carRepo.save(c);});
-        } else {
-            carRepo.deleteById(id);
+            // has rental history -> cannot delete
+            ra.addFlashAttribute("deleteError", "Xe có lịch sử thuê, không thể xoá. Nếu muốn tạm ẩn, đặt trạng thái INACTIVE.");
+            return "redirect:/admin/cars";
         }
+
+        carRepo.deleteById(id);
         return "redirect:/admin/cars";
     }
 

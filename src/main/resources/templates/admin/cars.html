@@ -16,6 +16,9 @@
           <h1 style="margin:0">Quản lý xe</h1>
           <a th:href="@{/admin/cars/new}" class="btn btn-primary">Thêm xe</a>
         </div>
+        <div th:if="${deleteError != null}" class="alert alert-error" style="margin-bottom:12px">
+          <span th:text="${deleteError}"></span>
+        </div>
         <div class="admin-table-wrapper">
           <table class="admin-table">
             <thead>
