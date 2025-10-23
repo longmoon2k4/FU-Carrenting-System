@@ -83,26 +83,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function openModal(show) {
     if (!modal) return;
-    try { modal.setAttribute('aria-hidden', 'false'); } catch (e) { console.error(e); }
+    try { 
+      // prepare for animated open
+      modal.classList.add('is-opening');
+      modal.setAttribute('aria-hidden', 'false'); 
+    } catch (e) { console.error(e); }
     showForm(show || 'login');
     try { console.log('[auth.js] openModal ->', show); } catch (e) { }
-    // visual fallback for debugging: ensure it's visible
+    // ensure display (in case CSS fallback needed)
     try { modal.style.display = 'flex'; } catch (e) { }
+    // finalize opening after a tick so CSS transitions apply
+    window.requestAnimationFrame(() => { modal.classList.add('is-open'); modal.classList.remove('is-opening'); });
   }
   function closeModal() {
     if (!modal) return;
-    try { modal.setAttribute('aria-hidden', 'true'); } catch (e) { console.error(e); }
-    try { modal.style.display = 'none'; } catch (e) { }
+    try {
+      // play close animation
+      modal.classList.remove('is-open');
+      modal.classList.add('is-closing');
+      // after transition, hide
+      const cleanup = () => {
+        try { modal.setAttribute('aria-hidden', 'true'); modal.style.display = 'none'; } catch (e) { }
+        modal.classList.remove('is-closing');
+        modal.removeEventListener('transitionend', cleanup);
+      };
+      modal.addEventListener('transitionend', cleanup);
+      // safety fallback: if transitionend doesn't fire, force hide
+      setTimeout(cleanup, 380);
+    } catch (e) { console.error(e); }
   }
   function showForm(name) {
     // toggle visibility on the container elements (not the <form> elements)
-    if (name === 'login') {
-      try { loginContainer && loginContainer.setAttribute('aria-hidden', 'false'); } catch (e) { }
-      try { registerContainer && registerContainer.setAttribute('aria-hidden', 'true'); } catch (e) { }
-    } else {
-      try { loginContainer && loginContainer.setAttribute('aria-hidden', 'true'); } catch (e) { }
-      try { registerContainer && registerContainer.setAttribute('aria-hidden', 'false'); } catch (e) { }
-    }
+    if (!modal) return;
+    try {
+      // add switching class to the content to give a tiny tilt effect
+      const content = modal.querySelector('.auth-modal-content');
+      if (content) content.classList.add('is-switching');
+      // perform the toggle
+      if (name === 'login') {
+        loginContainer && loginContainer.setAttribute('aria-hidden', 'false');
+        registerContainer && registerContainer.setAttribute('aria-hidden', 'true');
+      } else {
+        loginContainer && loginContainer.setAttribute('aria-hidden', 'true');
+        registerContainer && registerContainer.setAttribute('aria-hidden', 'false');
+      }
+      // remove switching after animation frame + small timeout
+      setTimeout(() => { if (content) content.classList.remove('is-switching'); }, 220);
+    } catch (e) { console.error(e); }
   }
 
   if (loginBtn) { loginBtn.addEventListener('click', (e) => { e.preventDefault(); openModal('login'); }); console.log('[auth.js] attached #login'); }
