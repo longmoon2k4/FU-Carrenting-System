@@ -63,12 +63,14 @@
                     <li class="header-middle-right-item dropdown">
                         <i class="fa-light fa-user header-user-icon" aria-hidden="true"></i>
                         <div class="auth-container">
-                            <span class="text-dndk">Đăng nhập / Đăng ký</span>
-                            <span class="text-tk">Tài khoản <i class="fa-sharp fa-solid fa-caret-down"></i></span>
+                            <!-- small line (email) -->
+                            <span class="text-dndk" th:text="${currentUserEmail} ?: 'Đăng nhập / Đăng ký'">Đăng nhập / Đăng ký</span>
+                            <!-- main line (customer name). keep caret icon for dropdown -->
+                            <span class="text-tk" th:utext="${currentUserName} != null ? ${#strings.escapeXml(currentUserName)} + ' <i class=\'fa-sharp fa-solid fa-caret-down\'></i>' : 'Tài khoản <i class=\'fa-sharp fa-solid fa-caret-down\'></i>'">Tài khoản <i class="fa-sharp fa-solid fa-caret-down"></i></span>
                         </div>
                         <ul class="header-middle-right-menu">
-                            <li><a id="login" href="javascript:;"><i class="fa-light fa-right-to-bracket"></i> Đăng nhập</a></li>
-                            <li><a id="signup" href="javascript:;"><i class="fa-light fa-user-plus"></i> Đăng ký</a></li>
+                            <li><a id="login" href="#" data-auth="login"><i class="fa-light fa-right-to-bracket"></i> Đăng nhập</a></li>
+                            <li><a id="signup" href="#" data-auth="register"><i class="fa-light fa-user-plus"></i> Đăng ký</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -76,3 +78,6 @@
         </div>
     </header>
 </div>
+
+
+<script th:src="@{/js/auth.js}"></script>

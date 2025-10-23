@@ -215,6 +215,106 @@ body{background:var(--bg);color:var(--primary);}
   text-decoration:none;
   white-space:nowrap;
 }
+
+/* Auth modal styles */
+#auth-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+#auth-modal[aria-hidden="false"] {
+    display: flex; /* Shown when active */
+}
+
+.auth-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Backdrop */
+}
+
+.auth-modal-content {
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1051;
+}
+
+.auth-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.auth-close:hover {
+    opacity: 0.8;
+}
+
+#login-form[aria-hidden="true"],
+#register-form[aria-hidden="true"] {
+    display: none;
+}
+
+#login-form[aria-hidden="false"],
+#register-form[aria-hidden="false"] {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: .5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#auth-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+#auth-modal .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#auth-modal p {
+    margin-top: 1rem;
+    text-align: center;
+}
+
 .topup-methods .method i{margin-right:8px;color:var(--accent);font-size:18px}
 .topup-methods .method:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(16,24,40,0.06)}
 

@@ -1,0 +1,64 @@
+<div id="auth-modal" aria-hidden="true" th:fragment="auth-modal">
+    <div class="auth-modal-backdrop"></div>
+    <div class="auth-modal-content">
+        <button class="auth-close" aria-label="Close">&times;</button>
+
+        <!-- Login Form -->
+        <div id="login-form" aria-hidden="false">
+            <h3>Đăng nhập</h3>
+            <form>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mật khẩu</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                <p>Chưa có tài khoản? <a href="#" class="auth-switch" data-target="register">Đăng ký</a></p>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" aria-hidden="true">
+            <h3>Đăng ký</h3>
+            <form>
+                <div class="form-group">
+                    <label for="register-name">Họ và tên</label>
+                    <input type="text" id="register-name" name="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Mật khẩu</label>
+                    <input type="password" id="register-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-mobile">Số điện thoại</label>
+                    <input type="tel" id="register-mobile" name="mobile">
+                </div>
+                <div class="form-group">
+                    <label for="register-identity">CMND/CCCD</label>
+                    <input type="text" id="register-identity" name="identityCard">
+                </div>
+                <div class="form-group">
+                    <label for="register-birthday">Ngày sinh</label>
+                    <input type="date" id="register-birthday" name="birthday">
+                </div>
+                <div class="form-group">
+                    <label for="register-license-number">Số GPLX</label>
+                    <input type="text" id="register-license-number" name="licenceNumber">
+                </div>
+                <div class="form-group">
+                    <label for="register-license-date">Ngày cấp GPLX</label>
+                    <input type="date" id="register-license-date" name="licenceDate">
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng ký</button>
+                <p>Đã có tài khoản? <a href="#" class="auth-switch" data-target="login">Đăng nhập</a></p>
+            </form>
+        </div>
+    </div>
+</div>
