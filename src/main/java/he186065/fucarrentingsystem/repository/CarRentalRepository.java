@@ -17,4 +17,10 @@ public interface CarRentalRepository extends JpaRepository<CarRental, Integer> {
 	Page<CarRental> findByCustomerIdPaged(@Param("customerId") Integer customerId, Pageable pageable);
 	List<CarRental> findByCustomerCustomerIdAndStatusIgnoreCase(Integer customerId, String status);
 
+	// count rentals for a car (any status)
+	long countByCarCarId(Integer carId);
+
+	// find rentals between start and end (inclusive) ordered by pickupDate desc
+	List<CarRental> findByPickupDateBetweenOrderByPickupDateDesc(java.time.LocalDate start, java.time.LocalDate end);
+
 }

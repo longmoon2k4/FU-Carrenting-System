@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <h1>Admin Dashboard</h1>
+      <div class="admin-cards">
+        <a href="/admin/customers" class="btn">Quản lý khách hàng</a>
+        <a href="/admin/cars" class="btn">Quản lý xe</a>
+        <a href="/admin/rentals" class="btn">Quản lý thuê</a>
+        <a href="/admin/reports" class="btn">Báo cáo</a>
+      </div>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>

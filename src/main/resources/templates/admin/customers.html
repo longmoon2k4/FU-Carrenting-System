@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Customers</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <h1>Quản lý khách hàng</h1>
+      <table style="width:100%">
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Mobile</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr th:each="c : ${customers}">
+            <td th:text="${c.customerId}"></td>
+            <td th:text="${c.customerName}"></td>
+            <td th:text="${c.email}"></td>
+            <td th:text="${c.mobile}"></td>
+            <td>
+              <a th:href="@{'/admin/customers/' + ${c.customerId} + '/edit'}" class="btn">Edit</a>
+              <form th:action="@{'/admin/customers/' + ${c.customerId} + '/delete'}" method="post" style="display:inline">
+                <button type="submit" class="btn btn-secondary">Delete</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>

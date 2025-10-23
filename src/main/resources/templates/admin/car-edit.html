@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit car</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <h1>Edit Car</h1>
+      <form th:action="@{'/admin/cars/' + ${car.carId} + '/edit'}" method="post">
+        <label>Name</label>
+        <input name="carName" th:value="${car.carName}" />
+        <label>Year</label>
+        <input name="carModelYear" th:value="${car.carModelYear}" />
+        <label>Price</label>
+        <input name="rentPrice" th:value="${car.rentPrice}" />
+        <label>Status</label>
+        <input name="status" th:value="${car.status}" />
+        <div style="margin-top:12px"><button class="btn btn-primary">Save</button></div>
+      </form>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>

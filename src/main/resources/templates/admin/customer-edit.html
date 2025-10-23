@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit customer</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <h1>Edit Customer</h1>
+      <form th:action="@{'/admin/customers/' + ${customer.customerId} + '/edit'}" method="post">
+        <label>Name</label>
+        <input name="customerName" th:value="${customer.customerName}" />
+        <label>Email</label>
+        <input name="email" th:value="${customer.email}" />
+        <label>Mobile</label>
+        <input name="mobile" th:value="${customer.mobile}" />
+        <div style="margin-top:12px"><button class="btn btn-primary">Save</button></div>
+      </form>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>
