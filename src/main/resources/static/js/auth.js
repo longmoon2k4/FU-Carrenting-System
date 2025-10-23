@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       if (e.target.closest && e.target.closest('#logout')) {
         e.preventDefault();
-        fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' })
           .then(() => {
             clearCurrentUser();
             try{ showToast('Đã đăng xuất', 'success'); }catch(e){}
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
       password: (loginForm.password && loginForm.password.value) || (loginForm.querySelector('[name="password"]') && loginForm.querySelector('[name="password"]').value) || ''
     };
     fetch('/api/auth/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), credentials: 'same-origin'
     }).then(r => {
       if (r.ok) return r.json().then(u => ({ status: r.status, body: u }));
       return r.text().then(t => ({ status: r.status, body: t }));
@@ -202,6 +202,8 @@ document.addEventListener('DOMContentLoaded', function () {
         try { setCurrentUser(user); } catch (e) { }
         closeModal();
         showToast('Đăng nhập thành công', 'success');
+        // reload page so server-side session is used and header/templates reflect login
+        setTimeout(() => { window.location.reload(); }, 350);
       } else if (res.status === 404) {
         showToast('Email không tồn tại', 'error');
       } else if (res.status === 401) {
@@ -228,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
       licenceNumber: registerForm.querySelector('[name="licenceNumber"]').value || '',
       licenceDate: registerForm.querySelector('[name="licenceDate"]').value || null
     };
-    fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials: 'same-origin' })
       .then(r => { if (r.ok) return r.json(); return r.text().then(t => { throw new Error(t) }); })
       .then(res => {
         if (res.ok) return res.json().then(u => ({ status: res.status, body: u }));
@@ -238,6 +240,8 @@ document.addEventListener('DOMContentLoaded', function () {
           try { setCurrentUser(r.body); } catch (e) { }
           closeModal();
           showToast('Đăng ký thành công', 'success');
+          // reload to pick up server-side session and header/menu differences
+          setTimeout(() => { window.location.reload(); }, 350);
         } else if (r.status === 409) {
           // response body is comma-separated duplicated fields
           const fields = String(r.body).split(',').filter(Boolean);

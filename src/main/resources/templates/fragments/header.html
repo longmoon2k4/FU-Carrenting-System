@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!-- Header fragment -->
 <div th:fragment="site-header">
+    <!-- Ensure Font Awesome is available on pages that include this fragment -->
+    <link rel="stylesheet" th:href="@{/font/font-awesome-pro-v6-6.2.0/css/all.min.css}" />
     <header class="site-header">
         <div class="header-top">
             <div class="container header-flex">
@@ -12,8 +14,7 @@
                 </div>
                 <nav class="header-nav" aria-label="Main navigation">
                     <a class="nav-item" href="/">Trang chủ</a>
-                    <a class="nav-item" href="/cars">Thuê xe</a>
-                    <a class="nav-item" href="/rent">Cho thuê</a>
+                    <a class="nav-item" href="/rent">Thuê xe</a>
                     <a class="nav-item" href="/return">Trả xe</a>
                     <a class="nav-item" href="/wallet">Nạp tiền</a>
                     <a class="nav-item" href="/support">Hỗ trợ</a>
