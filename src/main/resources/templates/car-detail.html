@@ -12,7 +12,7 @@
     <div class="container-inner">
       <div class="car-detail-card">
         <div class="car-detail-media">
-          <img th:src="@{/img/car-placeholder.png}" th:alt="${car.carName}" />
+          <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" />
         </div>
         <div class="car-detail-body">
           <h1 th:text="${car.carName}">Car name</h1>

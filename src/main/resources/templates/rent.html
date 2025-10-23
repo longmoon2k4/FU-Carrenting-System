@@ -20,7 +20,7 @@
           <h2>Xe khả dụng</h2>
           <div class="car-grid">
             <div class="car-card" th:each="car : ${availableCars}">
-              <img th:src="@{/img/car-placeholder.png}" th:alt="${car.carName}" />
+              <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" />
               <div class="card-body">
                 <h3 th:text="${car.carName}"></h3>
                 <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>

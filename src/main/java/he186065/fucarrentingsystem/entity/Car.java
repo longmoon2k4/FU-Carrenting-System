@@ -43,6 +43,9 @@ public class Car {
     @Column(name = "RentPrice", nullable = false)
     private BigDecimal rentPrice;
 
+    @Column(name = "ImageUrl")
+    private String imageUrl;
+
     @Column(name = "Status", nullable = false)
     private String status;
 
@@ -83,6 +86,9 @@ public class Car {
 
     public BigDecimal getRentPrice() { return rentPrice; }
     public void setRentPrice(BigDecimal rentPrice) { this.rentPrice = rentPrice; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
