@@ -356,9 +356,7 @@ body{background:var(--bg);color:var(--primary);}
 .faq{padding:28px 0}
 .contact-cta{padding:28px 0;text-align:center}
 
-/* ====== Full-width main layout (remove big side gaps) ====== */
-/* make the page main area stretch to the viewport width while keeping section padding */
-.site-main.container{max-width:100%;padding:0;margin:0}
+.site-main.container{max-width:100%; /* keep top padding to account for fixed header */ padding-top:calc(var(--header-height) + 24px); padding-left:0;padding-right:0;margin:0; position:relative}
 .site-main .container-inner{max-width:1200px;margin:0 auto;padding:24px}
 .site-banner-inner{max-width:100%;padding:8px 20px}
 
@@ -379,6 +377,11 @@ body{background:var(--bg);color:var(--primary);}
   .site-banner-inner.glow .banner-cta{padding:6px 10px;font-size:14px}
 }
 
+/* mobile: slightly reduce top padding to save space */
+@media (max-width:480px){
+  .site-main.container{padding-top:calc(var(--header-height) + 12px);} 
+}
+
 /* ===== Profile page / account settings styles ===== */
 /* Scoped by presence of #profile-form so it won't affect other pages */
 #profile-form{
@@ -395,6 +398,20 @@ body{background:var(--bg);color:var(--primary);}
 
 #profile-form > div{display:flex;flex-direction:column}
 #profile-form label{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600}
+
+/* Overlay shown on pages that require authentication */
+.auth-required-overlay{
+  position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:900;
+  background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6));backdrop-filter:blur(3px);
+}
+.auth-required-card{background:#fff;padding:28px;border-radius:12px;box-shadow:0 18px 40px rgba(16,24,40,0.12);max-width:560px;text-align:center}
+.auth-required-card h2{margin:0 0 8px;font-size:20px;color:var(--primary)}
+.auth-required-card p{color:var(--muted);margin:0 0 16px}
+.auth-required-actions{display:flex;gap:12px;justify-content:center}
+.auth-required-actions .btn{padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+.auth-required-actions .btn-primary{background:var(--accent);color:#fff}
+.auth-required-actions .btn-secondary{background:#f3f4f6}
+
 #profile-form input[type="text"],
 #profile-form input[type="email"],
 #profile-form input[type="tel"],

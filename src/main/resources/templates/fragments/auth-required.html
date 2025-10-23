@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<!-- Reusable fragment shown when a page requires authentication -->
+<div th:fragment="auth-required">
+  <div class="auth-required-overlay" th:if="${currentUser} == null">
+    <div class="auth-required-card">
+      <h2>Bạn chưa đăng nhập</h2>
+      <p>Vui lòng đăng nhập hoặc tạo tài khoản mới để sử dụng chức năng này.</p>
+      <div class="auth-required-actions">
+        <button type="button" class="btn btn-primary" data-auth="login">Đăng nhập</button>
+        <button type="button" class="btn btn-secondary" data-auth="register">Tạo tài khoản</button>
+      </div>
+    </div>
+  </div>
+</div>

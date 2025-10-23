@@ -15,10 +15,27 @@
       <div th:if="${currentUser}">
         <h3>Xin chào, <span th:text="${currentUser.customerName}"></span></h3>
         <p>Email: <span th:text="${currentUser.email}"></span></p>
+
+        <section class="featured-cars fade-in">
+          <h2>Xe khả dụng</h2>
+          <div class="car-grid">
+            <div class="car-card" th:each="car : ${availableCars}">
+              <img th:src="@{/img/car-placeholder.png}" th:alt="${car.carName}" />
+              <div class="card-body">
+                <h3 th:text="${car.carName}"></h3>
+                <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>
+                <p th:text="${car.carModelYear} + ' • ' + ${car.color} + ' • ' + ${car.capacity} + ' chỗ'"/>
+                <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+                  <a th:href="@{'/rent/book/' + ${car.carId}}" class="btn btn-primary">Thuê</a>
+                  <a th:href="@{'/cars/' + ${car.carId}}" class="btn btn-secondary">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-      <div th:if="${currentUser} == null">
-        <p>Bạn chưa đăng nhập. Hãy đăng nhập để sử dụng chức năng này.</p>
-      </div>
+      <!-- show auth-required overlay when not logged in -->
+      <div th:insert="fragments/auth-required :: auth-required"></div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>

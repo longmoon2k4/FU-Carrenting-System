@@ -16,6 +16,7 @@
         <h3>Xin chào, <span th:text="${currentUser.customerName}"></span></h3>
         <p>Email: <span th:text="${currentUser.email}"></span></p>
       </div>
+      <div th:insert="fragments/auth-required :: auth-required"></div>
     </div>
   </main>
   <div th:insert="fragments/footer :: site-footer"></div>
