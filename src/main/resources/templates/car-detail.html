@@ -15,18 +15,90 @@
           <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" />
         </div>
         <div class="car-detail-body">
-          <h1 th:text="${car.carName}">Car name</h1>
-          <div class="muted">Thương hiệu: <span th:text="${car.producer != null ? car.producer.producerName : 'N/A'}">Producer</span></div>
-          <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>
-          <div class="meta">
-            <span th:text="${car.carModelYear}"></span> • <span th:text="${car.color}"></span> • <span th:text="${car.capacity}"></span> chỗ
-          </div>
-          <p class="description" th:text="${car.description}"></p>
+            <h1 th:text="${car.carName}">Car name</h1>
 
-          <div style="margin-top:18px;display:flex;gap:12px">
-            <a th:href="@{'/rent/book/' + ${car.carId}}" class="btn btn-primary">Thuê ngay</a>
-            <a th:href="@{/rent}" class="btn btn-secondary">Quay lại</a>
-          </div>
+            <div class="car-detail-grid">
+              <div>
+                <strong>Mã xe:</strong>
+                <div th:text="${car.carId}"></div>
+              </div>
+              <div>
+                <strong>Thương hiệu:</strong>
+                <div>
+                  <span th:if="${car.producer != null}">
+                    <a th:href="@{'/producers/' + ${car.producer.producerId}}" th:text="${car.producer.producerName}"></a>
+                    <div class="muted small" style="margin-top:6px">
+                      <div th:text="${car.producer.address}"></div>
+                      <div th:text="${car.producer.country}"></div>
+                    </div>
+                  </span>
+                  <span th:unless="${car.producer != null}">N/A</span>
+                </div>
+              </div>
+              <div>
+                <strong>Năm sản xuất:</strong>
+                <div th:text="${car.carModelYear}"></div>
+              </div>
+              <div>
+                <strong>Màu:</strong>
+                <div th:text="${car.color}"></div>
+              </div>
+              <div>
+                <strong>Sức chứa:</strong>
+                <div th:text="${car.capacity} + ' chỗ'"></div>
+              </div>
+              <div>
+                <strong>Giá thuê:</strong>
+                <div class="price" th:text="${#numbers.formatDecimal(car.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND/ngày'"></div>
+              </div>
+              <div>
+                <strong>Trạng thái:</strong>
+                <div th:text="${car.status}"></div>
+              </div>
+              <div>
+                <strong>Ngày nhập:</strong>
+                <div th:text="${car.importDate} != null ? ${#temporals.format(car.importDate, 'dd/MM/yyyy')} : 'N/A'"></div>
+              </div>
+            </div>
+
+            <section style="margin-top:12px">
+              <h3>Mô tả</h3>
+              <p class="description" th:text="${car.description}"></p>
+            </section>
+
+            <section style="margin-top:18px">
+              <h3>Ảnh</h3>
+              <div>
+                <img th:src="${car.imageUrl} ? @{${car.imageUrl}} : @{/img/car-placeholder.svg}" th:alt="${car.carName}" style="max-width:320px;border-radius:8px" />
+              </div>
+            </section>
+
+            <section style="margin-top:18px" th:if="${car.rentals != null and #lists.size(car.rentals) > 0}">
+              <h3>Lịch thuê (gần đây)</h3>
+              <ul>
+                <li th:each="r : ${car.rentals}">
+                  <span th:text="${#temporals.format(r.pickupDate, 'dd/MM/yyyy')}"></span> → <span th:text="${#temporals.format(r.returnDate, 'dd/MM/yyyy')}"></span>
+                  — <span th:text="${r.status}"></span>
+                  <span th:if="${r.customer != null}"> (Khách: <span th:text="${r.customer.customerName}"></span>)</span>
+                </li>
+              </ul>
+            </section>
+
+            <section style="margin-top:18px" th:if="${car.reviews != null and #lists.size(car.reviews) > 0}">
+              <h3>Đánh giá</h3>
+              <ul class="reviews-list">
+                <li th:each="rev : ${car.reviews}">
+                  <strong th:text="${rev.reviewStar} + '★'"></strong>
+                  <span th:if="${rev.customer != null}"> — <em th:text="${rev.customer.customerName}"></em></span>
+                  <div th:text="${rev.comment}"></div>
+                </li>
+              </ul>
+            </section>
+
+            <div style="margin-top:18px;display:flex;gap:12px">
+              <a th:href="@{'/rent/book/' + ${car.carId}}" class="btn btn-primary">Thuê ngay</a>
+              <a th:href="@{/rent}" class="btn btn-secondary">Quay lại</a>
+            </div>
         </div>
       </div>
     </div>
