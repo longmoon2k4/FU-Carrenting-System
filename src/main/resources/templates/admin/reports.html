@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Reports</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <h1 style="margin:0">Báo cáo giao dịch thuê xe</h1>
+          <a th:href="@{/admin/rentals}" class="btn btn-secondary">Quản lý thuê</a>
+        </div>
+
+        <form method="get" th:action="@{/admin/reports}" style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+          <label style="font-weight:600;color:var(--muted)">Từ</label>
+          <input type="date" name="start" th:value="${start}" />
+          <label style="font-weight:600;color:var(--muted)">Đến</label>
+          <input type="date" name="end" th:value="${end}" />
+          <button class="btn btn-primary">Xem</button>
+          <a th:if="${start != null and end != null}" th:href="@{'/admin/reports/csv'(start=${start},end=${end})}" class="btn btn-secondary">Export CSV</a>
+        </form>
+
+        <div th:if="${items != null}">
+          <div style="margin-bottom:12px;font-weight:700">Tổng bản ghi: <span th:text="${count}"></span> — Tổng doanh thu: <span th:text="${total}"></span></div>
+
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>RentalId</th>
+                  <th>Car</th>
+                  <th>Customer</th>
+                  <th>PickupDate</th>
+                  <th>ReturnDate</th>
+                  <th>RentPrice</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="r : ${items}">
+                  <td th:text="${r.carRentalId}"></td>
+                  <td th:text="${r.car != null ? r.car.carName : 'N/A'}"></td>
+                  <td th:text="${r.customer != null ? r.customer.customerName : 'N/A'}"></td>
+                  <td th:text="${r.pickupDate}"></td>
+                  <td th:text="${r.returnDate}"></td>
+                  <td th:text="${r.rentPrice}"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>

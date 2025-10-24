@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Rentals</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+  <div th:insert="fragments/header :: site-header"></div>
+  <main class="site-main container">
+    <div class="container-inner">
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <h1 style="margin:0">Quản lý thuê xe</h1>
+          <a th:href="@{/admin/reports}" class="btn btn-secondary">Báo cáo</a>
+        </div>
+
+        <div th:if="${message != null}" class="alert" th:classappend="${messageType} == 'error' ? ' alert-error' : ' alert-success'">
+          <span th:text="${message}"></span>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Xe</th>
+                <th>Khách</th>
+                <th>Pickup</th>
+                <th>Return</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${rentals}">
+                <td th:text="${r.carRentalId}"></td>
+                <td th:text="${r.car != null ? r.car.carName : 'N/A'}"></td>
+                <td th:text="${r.customer != null ? r.customer.customerName : 'N/A'}"></td>
+                <td th:text="${r.pickupDate}"></td>
+                <td th:text="${r.returnDate}"></td>
+                <td th:text="${r.rentPrice}"></td>
+                <td th:text="${r.status}"></td>
+                <td class="actions">
+                  <div class="list-actions">
+                    <form th:action="@{'/admin/rentals/' + ${r.carRentalId} + '/status'}" method="post" style="display:inline-flex;align-items:center;gap:6px">
+                      <select name="status" style="padding:6px;border-radius:8px;border:1px solid #ddd">
+                        <option value="RENTED" th:selected="${r.status} == 'RENTED'">RENTED</option>
+                        <option value="RETURNED" th:selected="${r.status} == 'RETURNED'">RETURNED</option>
+                        <option value="CANCELLED" th:selected="${r.status} == 'CANCELLED'">CANCELLED</option>
+                      </select>
+                      <button type="submit" class="btn small">Update</button>
+                    </form>
+
+                    <form th:action="@{'/admin/rentals/' + ${r.carRentalId} + '/delete'}" method="post" style="display:inline">
+                      <button type="submit" class="btn icon-btn small danger" title="Delete">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        <span class="sr-only">Delete</span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:insert="fragments/footer :: site-footer"></div>
+</body>
+</html>
